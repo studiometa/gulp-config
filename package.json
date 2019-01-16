@@ -1,5 +1,5 @@
 {
-  "name": "gulp-config",
+  "name": "@studiometa/gulp-config",
   "version": "1.0.0",
   "description": "Gulp configuration",
   "main": "src/index.js",
@@ -39,5 +39,9 @@
     "gulp-uglify": "^3.0.1",
     "lodash": "^4.17.11",
     "stylelint": "^9.10.0"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {}
 }
