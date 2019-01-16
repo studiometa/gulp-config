@@ -1,0 +1,43 @@
+{
+  "name": "gulp-config",
+  "version": "1.0.0",
+  "description": "Gulp configuration",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/studiometa/gulp-config.git"
+  },
+  "author": "Studio Meta <agence@studiometa.fr> (https://www.studiometa.fr)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/studiometa/gulp-config/issues"
+  },
+  "homepage": "https://github.com/studiometa/gulp-config#readme",
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/register": "^7.0.0",
+    "@studiometa/eslint-config": "^1.1.1",
+    "@studiometa/stylelint-config": "^1.0.1",
+    "autoprefixer": "^9.4.5",
+    "browser-sync": "^2.26.3",
+    "eslint": "^5.12.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.0.0",
+    "gulp-cli": "^2.0.1",
+    "gulp-eslint": "^5.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-notify": "^3.2.0",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-stylelint": "^8.0.0",
+    "gulp-uglify": "^3.0.1",
+    "lodash": "^4.17.11",
+    "stylelint": "^9.10.0"
+  }
+}
