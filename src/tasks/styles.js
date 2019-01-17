@@ -14,9 +14,12 @@ import styleLint from 'gulp-stylelint';
  *
  * @param  {Object} options All the options, see the defaults for all available
  *                          possibilities
- * @return {Function}       The `styles` gulp task
+ * @return {String}         The task's name
  */
-export const createStylesTask = (options) => {
+export const createStylesBuilder = (options) => {
+  /** @type {String} The task's name */
+  const taskName = 'styles-build';
+
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/styles',
@@ -37,12 +40,7 @@ export const createStylesTask = (options) => {
     cleanCssOptions,
   } = merge({}, defaults, options);
 
-  console.log(src);
-  console.log(dist);
-  console.log(postcssPlugins);
-  console.log(cleanCssOptions);
-
-  return gulp.task('styles', () => (
+  gulp.task(taskName, () => (
     gulp.src(src)
       .pipe(sourcemaps.init())
       .pipe(sass.sync().on('error', sass.logError))
@@ -52,14 +50,25 @@ export const createStylesTask = (options) => {
       .pipe(gulp.dest(dist))
       .pipe(browserSync.stream())
       .pipe(notify({
-        title: 'Styles',
+        title: `gulp ${taskName}`,
         message: 'The file <%= file.relative %> has been updated.',
       }))
   ));
+
+  return taskName;
 };
 
 
-export const createStylesLint = (options) => {
+/**
+ * Create the style linter task
+ *
+ * @param  {Object} options All the options, see the defaults object  below for
+ *                          for all available possibilities
+ * @return {String}         The task's name
+ */
+export const createStylesLinter = (options) => {
+  /** @type {String} The task's name */
+  const taskName = 'styles-lint';
 
   /** @type {Object} The linting task default options */
   const defaults = {
@@ -80,8 +89,10 @@ export const createStylesLint = (options) => {
     styleLintOptions,
   } = merge({}, defaults, options);
 
-  return gulp.task('styles-lint', () => (
+  gulp.task(taskName, () => (
     gulp.src(src)
       .pipe(styleLint(styleLintOptions))
   ));
+
+  return taskName;
 };
