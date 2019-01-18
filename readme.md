@@ -14,7 +14,7 @@ Create a file named `gulpfile.babel.js` at the root of your project:
 
 ```js
 import { resolve } from 'path';
-import create from './src';
+import create from '@studiometa/gulp-config';
 
 module.exports = create({
   styles: {
@@ -39,7 +39,9 @@ You will then have the following tasks available:
 - `gulp scripts-format`
 - `gulp serve`
 
-The default tasks will execute the build and lint tasks before the server one.
+The `gulp` default tasks will execute the build and lint tasks before the server one.
+
+The server tasks watch automatically for changes in the styles and scripts files to re-trigger the build and lint tasks.
 
 ## TODO
 
