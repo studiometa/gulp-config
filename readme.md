@@ -43,7 +43,6 @@ The `gulp` default tasks will execute the build and lint tasks before the server
 
 The server tasks watch automatically for changes in the styles and scripts files to re-trigger the build and lint tasks.
 
-## TODO
+## Contributing
 
-- Add documentation
-- Add sass multi inheritance for the styles tasks to avoid compiling every files when one changes
+See the "[Features](https://github.com/studiometa/gulp-config/projects/2)" project for a list of things to do. This project's branches are managed with [Git Flow](https://github.com/petervanderdoes/gitflow-avh) , every feature branch must be merged into develop via a pull request.
