@@ -1,4 +1,4 @@
-import gulp from 'gulp';
+import { src as source, dest } from 'gulp';
 import sass from 'gulp-sass';
 import cleanCss from 'gulp-clean-css';
 import browserSync from 'browser-sync';
@@ -14,11 +14,11 @@ import styleLint from 'gulp-stylelint';
  *
  * @param  {Object} options All the options, see the defaults for all available
  *                          possibilities
- * @return {String}         The task's name
+ * @return {Array}          Array of the name and function of the task
  */
 export const createStylesBuilder = (options) => {
   /** @type {String} The task's name */
-  const taskName = 'styles-build';
+  const name = 'styles-build';
 
   /** @type {Object} The defaults options */
   const defaults = {
@@ -40,22 +40,25 @@ export const createStylesBuilder = (options) => {
     cleanCssOptions,
   } = merge({}, defaults, options);
 
-  gulp.task(taskName, () => (
-    gulp.src(src)
-      .pipe(sourcemaps.init())
-      .pipe(sass.sync().on('error', sass.logError))
-      .pipe(postcss(postcssPlugins))
-      .pipe(cleanCss(cleanCssOptions))
-      .pipe(sourcemaps.write('map'))
-      .pipe(gulp.dest(dist))
-      .pipe(browserSync.stream())
-      .pipe(notify({
-        title: `gulp ${taskName}`,
-        message: 'The file <%= file.relative %> has been updated.',
-      }))
-  ));
-
-  return taskName;
+  return [
+    name,
+    () => (
+      source(src)
+        .pipe(sourcemaps.init())
+        .pipe(sass.sync().on('error', sass.logError))
+        .pipe(postcss(postcssPlugins))
+        .pipe(cleanCss(cleanCssOptions))
+        .pipe(sourcemaps.write('map'))
+        .pipe(dest(dist))
+        .pipe(browserSync.stream())
+        .pipe(notify({
+          title: `gulp ${name}`,
+          message: ({ relative }) => (
+            `The file ${relative} has been updated.`
+          ),
+        }))
+    ),
+  ];
 };
 
 
@@ -64,19 +67,20 @@ export const createStylesBuilder = (options) => {
  *
  * @param  {Object} options All the options, see the defaults object  below for
  *                          for all available possibilities
- * @return {String}         The task's name
+ * @return {Array}          Array of the name and function of the task
  */
 export const createStylesLinter = (options) => {
   /** @type {String} The task's name */
-  const taskName = 'styles-lint';
+  const name = 'styles-lint';
 
   /** @type {Object} The linting task default options */
   const defaults = {
     src: 'src/styles',
     styleLintOptions: {
+      failAfterError: false,
       reporters: [
         {
-          formatter: 'verbose',
+          formatter: 'string',
           console: true,
         },
       ],
@@ -89,10 +93,66 @@ export const createStylesLinter = (options) => {
     styleLintOptions,
   } = merge({}, defaults, options);
 
-  gulp.task(taskName, () => (
-    gulp.src(src)
-      .pipe(styleLint(styleLintOptions))
-  ));
+  // Make sure the `failAfterError` options is always false
+  styleLintOptions.failAfterError = false;
 
-  return taskName;
+  return [
+    name,
+    () => source(src).pipe(styleLint(styleLintOptions)),
+  ];
+};
+
+
+/**
+ * Create the style formatter task
+ *
+ * @param  {Object} options All the options, see the defaults object  below for
+ *                          for all available possibilities
+ * @return {Array}          Array of the name and function of the task
+ */
+export const createStylesFormatter = (options) => {
+  /** @type {String} The task's name */
+  const name = 'styles-format';
+
+  /** @type {Object} The linting task default options */
+  const defaults = {
+    src: 'src/styles',
+    styleLintOptions: {
+      failAfterError: false,
+      fix: true,
+      reporters: [
+        {
+          formatter: 'string',
+          console: true,
+        },
+      ],
+    },
+  };
+
+  // Merge custom and default options
+  const {
+    src,
+    styleLintOptions,
+  } = merge({}, defaults, options);
+
+  // Make sure the `failAfterError` options is always false
+  styleLintOptions.failAfterError = false;
+
+  // Make sure the `fix` options is always true
+  styleLintOptions.fix = true;
+
+  return [
+    name,
+    () => (
+      source(src)
+        .pipe(styleLint(styleLintOptions))
+        .pipe(dest(({ dirname }) => dirname))
+        .pipe(notify({
+          title: `gulp ${name}`,
+          message: ({ relative }) => (
+            `The file ${relative} has been formatted with StyleLint.`
+          ),
+        }))
+    ),
+  ];
 };

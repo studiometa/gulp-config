@@ -1,7 +1,7 @@
 import { resolve } from 'path';
-import register from './src';
+import create from './src';
 
-register({
+module.exports = create({
   styles: {
     src: resolve('./tests/src/styles/**/*.scss'),
     dist: resolve('./tests/dist/styles'),
@@ -10,28 +10,5 @@ register({
     src: resolve('./tests/src/scripts/**/*.js'),
     dist: resolve('./tests/dist/scripts/'),
   },
-  server: {
-    watchers: [
-      {
-        files: [ '**/*.scss' ],
-        options: {
-          cwd: resolve('./tests/src/styles/'),
-        },
-        tasks: [
-          'styles-lint',
-          'styles-build',
-        ],
-      },
-      {
-        files: [ '**/*.js' ],
-        options: {
-          cwd: resolve('./tests/src/scripts/'),
-        },
-        tasks: [
-          'scripts-lint',
-          'scripts-build',
-        ],
-      },
-    ],
-  },
+  server: true,
 });

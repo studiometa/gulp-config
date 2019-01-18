@@ -1,4 +1,4 @@
-import gulp from 'gulp';
+import { series, watch } from 'gulp';
 import browserSync from 'browser-sync';
 import merge from 'lodash/merge';
 
@@ -50,7 +50,7 @@ const registerWatchers = (watchers) => {
       callbacks,
     }) => {
       // Watch all `files`, with the given `options` and the `tasks` to execute
-      const watcher = gulp.watch(files, options, tasks);
+      const watcher = watch(files, options, series(...tasks));
       // Register all defined `callbacks` for the watcher
       registerWatcherCallbacks(watcher, callbacks);
     });
@@ -60,21 +60,16 @@ const registerWatchers = (watchers) => {
 /**
  * Create the `serve` Gulp task
  *
- * @param  {Object} options    The options for the server task, see the default
- *                             object below for all available options
- * @param  {Array}  buildTasks A list of builder tasks to execute before the
- *                             server starts
- * @param  {Array}  lintTasks  A list of linter tasks to executre before the
- *                             server starts
- * @return {String}            The task's name
+ * @param  {Object} options The options for the server task, see the default
+ *                          object below for all available options
+ * @return {Array}          Array of the name and function of the task
  */
-export const createServer = (options, buildTasks, lintTasks) => {
+export const createServer = (options) => {
   /** @type {String} The task's name */
-  const taskName = 'serve';
+  const name = 'serve';
 
   /** @type {Object} Defaults options */
   const defaults = {
-    beforeServe: [],
     browserSyncOptions: {
       watchTask: true,
       open: false,
@@ -85,26 +80,19 @@ export const createServer = (options, buildTasks, lintTasks) => {
 
   /** @type {Object} Merge the defaults and custom options */
   const {
-    beforeServe,
     browserSyncOptions,
     watchers,
   } = merge({}, defaults, options);
 
-  gulp.task(taskName, () => {
-    // Init the browser sync serve
-    browserSync.init(browserSyncOptions);
-    // Register all defined watcher
-    registerWatchers(watchers);
-  });
-
-  gulp.series.apply(null, [
-    ...beforeServe,
-    ...buildTasks,
-    ...lintTasks,
-    taskName,
-  ]);
-
-  return taskName;
+  return [
+    name,
+    () => {
+      // Init the browser sync server
+      browserSync.init(browserSyncOptions);
+      // Register all defined watcher
+      registerWatchers(watchers);
+    },
+  ];
 };
 
 

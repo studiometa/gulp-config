@@ -1,4 +1,4 @@
-import gulp from 'gulp';
+import { src as source, dest } from 'gulp';
 import merge from 'lodash/merge';
 import eslint from 'gulp-eslint';
 import sourcemaps from 'gulp-sourcemaps';
@@ -7,13 +7,14 @@ import notify from 'gulp-notify';
 
 /**
  * Create the `scripts-build` Gulp task
+ *
  * @param  {Object} options The options for the builder task, see the default
  *                          object defined below for all available options
- * @return {String}         The task's name
+ * @return {Array}          Array of the name and function of the task
  */
 export const createScriptsBuilder = (options) => {
   /** @type {String} The task's name */
-  const taskName = 'scripts-build';
+  const name = 'scripts-build';
 
   /** @type {Object} The defaults options */
   const defaults = {
@@ -39,19 +40,22 @@ export const createScriptsBuilder = (options) => {
     uglifyErrorHandler,
   } = merge({}, defaults, options);
 
-  gulp.task(taskName, () => (
-    gulp.src(src)
-      .pipe(sourcemaps.init())
-      .pipe(uglify(uglifyOptions).on('error', uglifyErrorHandler))
-      .pipe(sourcemaps.write('maps'))
-      .pipe(gulp.dest(dist))
-      .pipe(notify({
-        title: `gulp ${taskName}`,
-        message: 'The file <%= file.relative %> has been updated.',
-      }))
-  ));
-
-  return taskName;
+  return [
+    name,
+    () => (
+      source(src)
+        .pipe(sourcemaps.init())
+        .pipe(uglify(uglifyOptions).on('error', uglifyErrorHandler))
+        .pipe(sourcemaps.write('maps'))
+        .pipe(dest(dist))
+        .pipe(notify({
+          title: `gulp ${name}`,
+          message: ({ relative }) => (
+            `The file ${relative} has been updated.`
+          ),
+        }))
+    ),
+  ];
 };
 
 
@@ -60,11 +64,11 @@ export const createScriptsBuilder = (options) => {
  *
  * @param  {Object} options The options for the linter task, see the default
  *                          object defined below for all available options
- * @return {String}         The task's name
+ * @return {Array}          Array of the name and function of the task
  */
 export const createScriptsLinter = (options) => {
   /** @type {String} The task's name */
-  const taskName = 'scripts-lint';
+  const name = 'scripts-lint';
 
   /** @type {Object} The defaults options */
   const defaults = {
@@ -80,28 +84,27 @@ export const createScriptsLinter = (options) => {
     ESLintOptions,
   } = merge({}, defaults, options);
 
-  gulp.task(taskName, () => (
-    gulp.src(src)
-      .pipe(eslint(ESLintOptions))
-  ));
-
-  return taskName;
+  return [
+    name,
+    () => source(src).pipe(eslint(ESLintOptions)).pipe(eslint.format()),
+  ];
 };
 
 
 /**
  * Create the `scripts-format` Gulp task
+ *
  * @param  {Object} options The options for the linter task, see the default
  *                          object below for all available options
- * @return {String}         The task's name
+ * @return {Array}          Array of the name and function of the task
  */
 export const createScriptsFormatter = (options) => {
   /** @type {String} The task's name */
-  const taskName = 'scripts-format';
+  const name = 'scripts-format';
+
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/scripts',
-    dist: 'src/scripts',
     ESLintOptions: {
       useEslintrc: true,
       fix: true,
@@ -111,18 +114,24 @@ export const createScriptsFormatter = (options) => {
   /** @type {Object} Merge the defaults and custom options */
   const {
     src,
-    dist,
     ESLintOptions,
   } = merge({}, defaults, options);
 
   // Make sure the `fix` option is activated
   ESLintOptions.fix = true;
 
-  gulp.task(taskName, () => (
-    gulp.src(src)
-      .pipe(eslint(ESLintOptions))
-      .pipe(gulp.dest(dist))
-  ));
-
-  return taskName;
+  return [
+    name,
+    () => (
+      source(src)
+        .pipe(eslint(ESLintOptions))
+        .pipe(dest(({ dirname }) => dirname))
+        .pipe(notify({
+          title: `gulp ${name}`,
+          message: ({ relative }) => (
+            `The file ${relative} has been formatted with ESLint.`
+          ),
+        }))
+    ),
+  ];
 };
