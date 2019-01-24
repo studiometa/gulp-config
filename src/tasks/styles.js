@@ -30,6 +30,9 @@ export const createStylesBuilder = (options) => {
     cleanCssOptions: {
       level: 1,
     },
+    gulpSassOptions: {
+      includePaths: [],
+    },
   };
 
   // Merge custom options with default options
@@ -38,6 +41,7 @@ export const createStylesBuilder = (options) => {
     dist,
     postcssPlugins,
     cleanCssOptions,
+    gulpSassOptions,
   } = merge({}, defaults, options);
 
   return [
@@ -45,7 +49,7 @@ export const createStylesBuilder = (options) => {
     () => (
       source(src)
         .pipe(sourcemaps.init())
-        .pipe(sass.sync().on('error', sass.logError))
+        .pipe(sass(gulpSassOptions).on('error', sass.logError))
         .pipe(postcss(postcssPlugins))
         .pipe(cleanCss(cleanCssOptions))
         .pipe(sourcemaps.write('map'))
