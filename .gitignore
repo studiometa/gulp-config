@@ -12,3 +12,4 @@ backup/
 
 # Compiled assets
 tests/dist
+dist/
