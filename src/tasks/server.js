@@ -73,7 +73,7 @@ export const createServer = (options) => {
     browserSyncOptions: {
       watchTask: true,
       open: false,
-      proxy: 'HOST' in process.env ? process.env.HOST : false,
+      proxy: 'APP_HOST' in process.env ? process.env.APP_HOST : false,
     },
     watchers: [],
   };
