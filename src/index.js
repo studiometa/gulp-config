@@ -62,7 +62,7 @@ export const create = (options) => {
   // Generate scripts tasks
   if ('scripts' in options) {
     const [ builderName, builderTask ] = createScriptsBuilder(options.scripts);
-    const [ linterName, linterTask ]  = createScriptsLinter(options.scripts);
+    const [ linterName, linterTask ] = createScriptsLinter(options.scripts);
     const [ formatName, formatTask ] = createScriptsFormatter(options.scripts);
 
     buildTasksNames.push(builderName);
@@ -101,16 +101,12 @@ export const create = (options) => {
     tasks[serverName] = serverTask;
   }
 
-  const defaultTasksNames = [
+  // Register default task
+  tasks.default = async () => series(
     ...lintTasksNames,
     ...buildTasksNames,
-    ...serverTasksNames,
-  ];
-
-  console.log(...defaultTasksNames);
-
-  // Register default task
-  tasks.default = async () => series(...defaultTasksNames)();
+    ...serverTasksNames
+  )();
 
   return tasks;
 };
