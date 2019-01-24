@@ -20,7 +20,7 @@ import {
  *                          for all available possibilities
  * @return {Object}         An object containing all the tasks
  */
-export default (options) => {
+export const create = (options) => {
   /** @type {Array} An array for the builder tasks */
   const buildTasksNames = [];
 
@@ -101,14 +101,19 @@ export default (options) => {
     tasks[serverName] = serverTask;
   }
 
+  const defaultTasksNames = [
+    ...lintTasksNames,
+    ...buildTasksNames,
+    ...serverTasksNames,
+  ];
+
+  console.log(...defaultTasksNames);
+
   // Register default task
-  tasks.default = () => (
-    series.apply(null, [
-      ...lintTasksNames,
-      ...buildTasksNames,
-      ...serverTasksNames,
-    ])
-  );
+  tasks.default = async () => series(...defaultTasksNames)();
 
   return tasks;
 };
+
+
+export default create;

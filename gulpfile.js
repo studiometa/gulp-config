@@ -1,5 +1,5 @@
-import { resolve } from 'path';
-import create from './src';
+const { resolve } = require('path');
+const { create } = require('./dist');
 
 module.exports = create({
   styles: {
