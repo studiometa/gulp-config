@@ -1,4 +1,5 @@
 import { src as source, dest } from 'gulp';
+import { resolve } from 'path';
 import sass from 'gulp-sass';
 import cleanCss from 'gulp-clean-css';
 import browserSync from 'browser-sync';
@@ -23,6 +24,7 @@ export const createStylesBuilder = (options) => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/styles',
+    glob: '**/*.scss',
     dist: 'dist/styles',
     postcssPlugins: [
       autoprefixer(),
@@ -32,12 +34,17 @@ export const createStylesBuilder = (options) => {
     },
     gulpSassOptions: {
       includePaths: [],
+      importer: magicImporter({
+        disableImportOnce: true,
+      }),
     },
+    aliasOptions: {},
   };
 
   // Merge custom options with default options
   const {
     src,
+    glob,
     dist,
     postcssPlugins,
     cleanCssOptions,

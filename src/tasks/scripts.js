@@ -1,4 +1,5 @@
 import { src as source, dest } from 'gulp';
+import { resolve } from 'path';
 import merge from 'lodash/merge';
 import eslint from 'gulp-eslint';
 import sourcemaps from 'gulp-sourcemaps';
@@ -19,6 +20,7 @@ export const createScriptsBuilder = (options) => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/scripts',
+    glob: '**/*.js',
     dist: 'src/scripts',
     uglifyOptions: {
       compress: {
@@ -35,6 +37,7 @@ export const createScriptsBuilder = (options) => {
   /** @type {Object} Merge the defaults and custom options */
   const {
     src,
+    glob,
     dist,
     uglifyOptions,
     uglifyErrorHandler,
@@ -43,7 +46,7 @@ export const createScriptsBuilder = (options) => {
   return [
     name,
     () => (
-      source(src)
+      source(resolve(src, glob))
         .pipe(sourcemaps.init())
         .pipe(uglify(uglifyOptions).on('error', uglifyErrorHandler))
         .pipe(sourcemaps.write('maps'))
