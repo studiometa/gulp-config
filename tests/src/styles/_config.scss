@@ -1,0 +1,9 @@
+$color: yellow;
+$hello: red;
+
+$colors: (
+  'red': red,
+  'blue': blue,
+);
+
+@import '~@studiometa/scss-toolkit';

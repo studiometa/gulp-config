@@ -9,6 +9,10 @@ import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
 import merge from 'lodash/merge';
 import styleLint from 'gulp-stylelint';
+import sassInheritance from 'gulp-sass-multi-inheritance';
+import cache from 'gulp-cached';
+import filter from 'gulp-filter';
+import magicImporter from 'node-sass-magic-importer';
 
 /**
  * Create the styles compilation task
@@ -54,9 +58,14 @@ export const createStylesBuilder = (options) => {
   return [
     name,
     () => (
-      source(src)
+      source(resolve(src, glob))
+        .pipe(cache(name))
+        .pipe(sassInheritance({ dir: src }))
+        .pipe(filter(file => (
+          !/\/_/.test(file.path) || !/^_/.test(file.relative)
+        )))
         .pipe(sourcemaps.init())
-        .pipe(sass(gulpSassOptions).on('error', sass.logError))
+        .pipe(sass.sync(gulpSassOptions).on('error', sass.logError))
         .pipe(postcss(postcssPlugins))
         .pipe(cleanCss(cleanCssOptions))
         .pipe(sourcemaps.write('map'))
@@ -109,7 +118,11 @@ export const createStylesLinter = (options) => {
 
   return [
     name,
-    () => source(src).pipe(styleLint(styleLintOptions)),
+    () => (
+      source(src)
+        .pipe(cache(name))
+        .pipe(styleLint(styleLintOptions))
+    ),
   ];
 };
 
@@ -156,6 +169,7 @@ export const createStylesFormatter = (options) => {
     name,
     () => (
       source(src)
+        .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
         .pipe(dest(({ dirname }) => dirname))
         .pipe(notify({
