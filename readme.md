@@ -117,7 +117,7 @@ Options for the [`gulp-sass`](https://github.com/dlmanning/gulp-sass#options) pl
 
 #### `styles.styleLintOptions` _(Object)_
 
-Options for the [`'gulp-stylelint'`](https://github.com/olegskl/gulp-stylelint#options) plugin. This configuration is used in both the `styles-lint` and `styles-format` tasks, with the `fix` options automatically set to `true` for the `styles-format` task.
+Options for the [`gulp-stylelint`](https://github.com/olegskl/gulp-stylelint#options) plugin. This configuration is used in both the `styles-lint` and `styles-format` tasks, with the `fix` options automatically set to `true` for the `styles-format` task.
 
 ```js
 {
@@ -192,7 +192,7 @@ Handler for the `error` event of the `gulp-uglify` plugin.
 
 #### `scripts.ESLintOptions` _(Object)_
 
-Options for the `gulp-eslint` plugin. Check for a `.eslintrc` file in uyour project by default. This configuration object is used in both the `scripts-lint` and `scripts-format` tasks, with the `fix` options automatically set to `true` for the `scripts-format` task.
+Options for the `gulp-eslint` plugin. Check for a `.eslintrc` file in your project by default. This configuration object is used in both the `scripts-lint` and `scripts-format` tasks, with the `fix` options automatically set to `true` for the `scripts-format` task.
 
 ```js
 {
@@ -219,6 +219,8 @@ Options for the [`browser-sync`]() plugin.
   },
 }
 ```
+
+> If your project is using a `.env` file, you can load it in your `gulpfile.js` file with the [`dotenv`](https://github.com/motdotla/dotenv) package and set a variable named `APP_HOST` to take advantage of the default browser-sync configuration. The server setup by browser-sync will then be proxied on the port 3000 of the host you defined, you will have live-reload enabled by accessing `http://APP_HOST:3000`.
 
 #### `server.watchers` _(Array)_
 

@@ -78,6 +78,7 @@ export const createScriptsLinter = (options) => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/scripts',
+    glob: '**/*.js',
     ESLintOptions: {
       useEslintrc: true,
     },
@@ -86,13 +87,14 @@ export const createScriptsLinter = (options) => {
   /** @type {Object} Merge the defaults and custom options */
   const {
     src,
+    glob,
     ESLintOptions,
   } = merge({}, defaults, options);
 
   return [
     name,
     () => (
-      source(src)
+      source(resolve(src, glob))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
         .pipe(eslint.format())
@@ -115,6 +117,7 @@ export const createScriptsFormatter = (options) => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/scripts',
+    glob: '**/*.js',
     ESLintOptions: {
       useEslintrc: true,
       fix: true,
@@ -124,6 +127,7 @@ export const createScriptsFormatter = (options) => {
   /** @type {Object} Merge the defaults and custom options */
   const {
     src,
+    glob,
     ESLintOptions,
   } = merge({}, defaults, options);
 
@@ -133,7 +137,7 @@ export const createScriptsFormatter = (options) => {
   return [
     name,
     () => (
-      source(src)
+      source(resolve(src, glob))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
         .pipe(dest(({ dirname }) => dirname))

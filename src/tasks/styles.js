@@ -94,6 +94,7 @@ export const createStylesLinter = (options) => {
   /** @type {Object} The linting task default options */
   const defaults = {
     src: 'src/styles',
+    glob: '**/*.scss',
     styleLintOptions: {
       failAfterError: false,
       reporters: [
@@ -108,6 +109,7 @@ export const createStylesLinter = (options) => {
   // Merge custom and default options
   const {
     src,
+    glob,
     styleLintOptions,
   } = merge({}, defaults, options);
 
@@ -117,7 +119,7 @@ export const createStylesLinter = (options) => {
   return [
     name,
     () => (
-      source(src)
+      source(resolve(src, glob))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
     ),
@@ -139,6 +141,7 @@ export const createStylesFormatter = (options) => {
   /** @type {Object} The linting task default options */
   const defaults = {
     src: 'src/styles',
+    glob: '**/*.scss',
     styleLintOptions: {
       failAfterError: false,
       fix: true,
@@ -154,6 +157,7 @@ export const createStylesFormatter = (options) => {
   // Merge custom and default options
   const {
     src,
+    glob,
     styleLintOptions,
   } = merge({}, defaults, options);
 
@@ -166,7 +170,7 @@ export const createStylesFormatter = (options) => {
   return [
     name,
     () => (
-      source(src)
+      source(resolve(src, glob))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
         .pipe(dest(({ dirname }) => dirname))
