@@ -220,6 +220,8 @@ Options for the [`browser-sync`]() plugin.
 }
 ```
 
+> If your project is using a `.env` file, you can load it in your `gulpfile.js` file with the [`dotenv`](https://github.com/motdotla/dotenv) package and set a variable named `APP_HOST` to take advantage of the default browser-sync configuration. The server setup by browser-sync will then be proxied on the port 3000 of the host you defined, you will have live-reload enabled by accessing `http://APP_HOST:3000`.
+
 #### `server.watchers` _(Array)_
 
 A list of files you want to watch when the server is running. It allows you to execute custom tasks and callbacks when the given files or glob changes. By default, the build tasks (`styles-build` and `scripts-build`) and the lint tasks (`styles-lint` and `scripts-build`) are triggered when any of the files found in the `styles.src` and `scripts.src` paths changes. 
