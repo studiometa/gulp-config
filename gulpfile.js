@@ -1,4 +1,3 @@
-const { resolve } = require('path');
 const { create } = require('./dist');
 
 module.exports = create({

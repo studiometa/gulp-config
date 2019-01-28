@@ -37,12 +37,10 @@ export const createStylesBuilder = (options) => {
       level: 1,
     },
     gulpSassOptions: {
-      includePaths: [],
       importer: magicImporter({
         disableImportOnce: true,
       }),
     },
-    aliasOptions: {},
   };
 
   // Merge custom options with default options
