@@ -13,6 +13,9 @@
     "url": "git+https://github.com/studiometa/gulp-config.git"
   },
   "author": "Studio Meta <agence@studiometa.fr> (https://www.studiometa.fr)",
+  "contributors": [
+    "Titouan Mathis <titouan@studiometa.fr>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/studiometa/gulp-config/issues"
