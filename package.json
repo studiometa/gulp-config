@@ -6,7 +6,7 @@
   "scripts": {
     "test": "gulp",
     "compile": "babel --plugins @babel/plugin-transform-runtime --out-dir dist/ src/",
-    "prepublish": "npm run compile"
+    "prepare": "npm run compile"
   },
   "repository": {
     "type": "git",
