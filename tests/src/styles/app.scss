@@ -1,0 +1,16 @@
+@import './config';
+
+.foo {
+  display: block;
+  color: $color;
+
+  // Media queries
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+
+$has-classes: true;
+@import '~@studiometa/scss-toolkit';
+$has-classes: false;

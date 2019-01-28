@@ -1,0 +1,6 @@
+@import "config";
+
+@mixin test() {
+  overflow: hidden;
+  color: $color;
+}

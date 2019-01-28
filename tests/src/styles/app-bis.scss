@@ -1,0 +1,6 @@
+@import "config-bis";
+
+
+.bar {
+  @include test;
+}
