@@ -1,6 +1,25 @@
 # Gulp Configuration
 
-A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files.
+A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files.^
+
+- [Usage](#usage)
+- [Options](#options)
+  + [Styles](#styles)
+    * [`src`](#stylessrc-string)
+    * [`glob`](#stylesglob-string)
+    * [`dist`](#stylesdist-string)
+    * [`postCssPlugins`](#stylespostcssplugins-array)
+    * [`styleLintOptions`](#stylesstylelintoptions-object)
+  + [Scripts](#scripts)
+    * [`src`](#scriptssrc-string)
+    * [`glob`](#scriptsglob-string)
+    * [`dist`](##scriptsdist-string)
+    * [`uglifyOptions`](#scriptsuglifyoptions-object)
+    * [`uglifyErrorHandler`](#scriptsuglifyerrorhandler-function)
+    * [`ESLintOptions`](#scriptseslintoptions-object)
+  + [Server](#server)
+    * [`browserSyncOptions`](#serverbrowsersyncoptions-object)
+    * [`watchers`](#serverwatchers-array)
 
 ## Usage
 
@@ -23,8 +42,8 @@ module.exports = config.create({
     dist: './tests/dist/styles',
   },
   scripts: {
-    src: './tests/src/scripts/**/*.js',
-    dist: './tests/dist/scripts/',
+    src: './tests/src/scripts',
+    dist: './tests/dist/scripts',
   },
   server: true,
 });
@@ -235,13 +254,17 @@ The following example will watch for changes in your HTML files and trigger a br
     cwd: 'path/to/your/files',
   },
   callbacks: [
-    () => browserSync.reload(),
+    {
+      event: 'change', // 'add', 'change' or 'unlink'
+      callback: (browserSync) => browserSync.reload(),
+    },
   ],
   tasks: [
     'styles-build',
   ],
 }
 ```
+See the [Gulp documentation](https://gulpjs.com/docs/en/api/watch) on the `watch` method for more detailed information on how a watcher works.
 
 
 ## Contributing

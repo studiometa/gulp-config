@@ -1,5 +1,6 @@
 import { src as source, dest } from 'gulp';
 import { resolve } from 'path';
+import isArray from 'lodash/isArray';
 import sass from 'gulp-sass';
 import cleanCss from 'gulp-clean-css';
 import browserSync from 'browser-sync';
@@ -30,7 +31,7 @@ export const createStylesBuilder = (options) => {
     src: 'src/styles',
     glob: '**/*.scss',
     dist: 'dist/styles',
-    postcssPlugins: [
+    postCssPlugins: [
       autoprefixer(),
     ],
     cleanCssOptions: {
@@ -43,12 +44,19 @@ export const createStylesBuilder = (options) => {
     },
   };
 
+  // Merge defaults PostCSS plugins with the custom ones
+  if ('postCssPlugins' in options && isArray(options.postCssPlugins)) {
+    defaults.postCssPlugins.forEach(plugin => (
+      options.postCssPlugins.push(plugin)
+    ));
+  }
+
   // Merge custom options with default options
   const {
     src,
     glob,
     dist,
-    postcssPlugins,
+    postCssPlugins,
     cleanCssOptions,
     gulpSassOptions,
   } = merge({}, defaults, options);
@@ -64,7 +72,7 @@ export const createStylesBuilder = (options) => {
         )))
         .pipe(sourcemaps.init())
         .pipe(sass.sync(gulpSassOptions).on('error', sass.logError))
-        .pipe(postcss(postcssPlugins))
+        .pipe(postcss(postCssPlugins))
         .pipe(cleanCss(cleanCssOptions))
         .pipe(sourcemaps.write('map'))
         .pipe(dest(dist))
@@ -76,6 +84,14 @@ export const createStylesBuilder = (options) => {
           ),
         }))
     ),
+    {
+      src,
+      glob,
+      dist,
+      postCssPlugins,
+      cleanCssOptions,
+      gulpSassOptions,
+    },
   ];
 };
 

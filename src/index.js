@@ -1,5 +1,6 @@
 import { series } from 'gulp';
 import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
 import merge from 'lodash/merge';
 import { createServer } from './tasks/server';
 import {
@@ -38,7 +39,11 @@ export const create = (options) => {
 
   // Generate styles tasks
   if ('styles' in options) {
-    const [ builderName, builderTask ] = createStylesBuilder(options.styles);
+    const [
+      builderName,
+      builderTask,
+      builderOptions,
+    ] = createStylesBuilder(options.styles);
     const [ linterName, linterTask ] = createStylesLinter(options.styles);
     const [ formatName, formatTask ] = createStylesFormatter(options.styles);
 
@@ -47,7 +52,10 @@ export const create = (options) => {
 
     // Add styles watchers
     watchers.push({
-      files: [ options.styles.src ],
+      files: [ builderOptions.glob ],
+      options: {
+        cwd: builderOptions.src,
+      },
       tasks: [
         builderName,
         linterName,
@@ -61,7 +69,11 @@ export const create = (options) => {
 
   // Generate scripts tasks
   if ('scripts' in options) {
-    const [ builderName, builderTask ] = createScriptsBuilder(options.scripts);
+    const [
+      builderName,
+      builderTask,
+      builderOptions,
+    ] = createScriptsBuilder(options.scripts);
     const [ linterName, linterTask ] = createScriptsLinter(options.scripts);
     const [ formatName, formatTask ] = createScriptsFormatter(options.scripts);
 
@@ -70,7 +82,10 @@ export const create = (options) => {
 
     // Add scripts watchers
     watchers.push({
-      files: [ options.scripts.src ],
+      files: [ builderOptions.glob ],
+      options: {
+        cwd: builderOptions.src,
+      },
       tasks: [
         builderName,
         linterName,
@@ -91,12 +106,18 @@ export const create = (options) => {
     ('server' in options)
     && (isObject(options.server) || options.server === true)
   ) {
-    const customOptions = isObject(options.server)
+    options.server = isObject(options.server)
       ? options.server
-      : {};
-    const serverOptions = merge({}, customOptions, { watchers });
+      : { watchers: [] };
 
-    const [ serverName, serverTask ] = createServer(serverOptions);
+    // We add the default watchers to the options `watchers` array, but we have
+    // to make sure it exists in the first place
+    if (options.server.watchers === undefined) {
+      options.server.watchers = [];
+    }
+    watchers.forEach(watcher => options.server.watchers.push(watcher));
+
+    const [ serverName, serverTask ] = createServer(options.server);
     serverTasksNames.push(serverName);
     tasks[serverName] = serverTask;
   }

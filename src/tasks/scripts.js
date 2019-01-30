@@ -60,6 +60,13 @@ export const createScriptsBuilder = (options) => {
           ),
         }))
     ),
+    {
+      src,
+      glob,
+      dist,
+      uglifyOptions,
+      uglifyErrorHandler,
+    },
   ];
 };
 
