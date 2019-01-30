@@ -140,7 +140,7 @@ export const createScriptsFormatter = (options) => {
       source(resolve(src, glob))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
-        .pipe(dest(({ dirname }) => dirname))
+        .pipe(dest(src))
         .pipe(notify({
           title: `gulp ${name}`,
           message: ({ relative }) => (
