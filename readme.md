@@ -1,6 +1,25 @@
 # Gulp Configuration
 
-A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files.
+A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files.^
+
+- [Usage](#usage)
+- [Options](#options)
+  + [Styles](#styles)
+    * [`src`](#stylessrc-string)
+    * [`glob`](#stylesglob-string)
+    * [`dist`](#stylesdist-string)
+    * [`postCssPlugins`](#stylespostcssplugins-array)
+    * [`styleLintOptions`](#stylesstylelintoptions-object)
+  + [Scripts](#scripts)
+    * [`src`](#scriptssrc-string)
+    * [`glob`](#scriptsglob-string)
+    * [`dist`](##scriptsdist-string)
+    * [`uglifyOptions`](#scriptsuglifyoptions-object)
+    * [`uglifyErrorHandler`](#scriptsuglifyerrorhandler-function)
+    * [`ESLintOptions`](#scriptseslintoptions-object)
+  + [Server](#server)
+    * [`browserSyncOptions`](#serverbrowsersyncoptions-object)
+    * [`watchers`](#serverwatchers-array)
 
 ## Usage
 
