@@ -1,5 +1,6 @@
 import { series } from 'gulp';
 import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
 import merge from 'lodash/merge';
 import { createServer } from './tasks/server';
 import {
@@ -108,6 +109,12 @@ export const create = (options) => {
     const customOptions = isObject(options.server)
       ? options.server
       : {};
+
+    // Push custom watchers to the global watchers array
+    if ('watchers' in customOptions && isArray(customOptions.watchers)) {
+      customOptions.watchers.forEach(watcher => watchers.push(watcher));
+    }
+
     const serverOptions = merge({}, customOptions, { watchers });
 
     const [ serverName, serverTask ] = createServer(serverOptions);
