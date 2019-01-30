@@ -20,7 +20,9 @@ const registerWatcherCallbacks = (watcher, callbacks) => {
 
   callbacks.map(callback => ({ ...defaultCallback, ...callback }))
     .forEach(({ event, callback }) => {
-      watcher.on(event, callback);
+      watcher.on(event, (path, stats) => {
+        callback(browserSync, path, stats);
+      });
     });
 };
 
