@@ -20,7 +20,9 @@ const registerWatcherCallbacks = (watcher, callbacks) => {
 
   callbacks.map(callback => ({ ...defaultCallback, ...callback }))
     .forEach(({ event, callback }) => {
-      watcher.on(event, callback);
+      watcher.on(event, (path, stats) => {
+        callback(browserSync, path, stats);
+      });
     });
 };
 
@@ -50,7 +52,9 @@ const registerWatchers = (watchers) => {
       callbacks,
     }) => {
       // Watch all `files`, with the given `options` and the `tasks` to execute
-      const watcher = watch(files, options, series(...tasks));
+      const watcher = tasks.length > 0
+        ? watch(files, options, series(...tasks))
+        : watch(files, options);
       // Register all defined `callbacks` for the watcher
       registerWatcherCallbacks(watcher, callbacks);
     });

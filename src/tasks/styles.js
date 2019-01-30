@@ -84,6 +84,14 @@ export const createStylesBuilder = (options) => {
           ),
         }))
     ),
+    {
+      src,
+      glob,
+      dist,
+      postcssPlugins,
+      cleanCssOptions,
+      gulpSassOptions,
+    },
   ];
 };
 

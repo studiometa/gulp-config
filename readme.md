@@ -254,13 +254,17 @@ The following example will watch for changes in your HTML files and trigger a br
     cwd: 'path/to/your/files',
   },
   callbacks: [
-    () => browserSync.reload(),
+    {
+      event: 'change', // 'add', 'change' or 'unlink'
+      callback: (browserSync) => browserSync.reload(),
+    },
   ],
   tasks: [
     'styles-build',
   ],
 }
 ```
+See the [Gulp documentation](https://gulpjs.com/docs/en/api/watch) on the `watch` method for more detailed information on how a watcher works.
 
 
 ## Contributing
