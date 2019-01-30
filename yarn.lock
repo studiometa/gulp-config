@@ -719,10 +719,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@studiometa/eslint-config@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@studiometa/eslint-config/-/eslint-config-1.1.1.tgz#fd0be8568474fec29b1bf60998e222ed8869032b"
-  integrity sha512-25wvkLUC3kH+RI7agAVgyliLHdjbjItxIWQjLa7iOZu1hg3KsQzqzz7Fr/Uh/YTYvIJ3gf3/S0zaAnrzx1PQ/g==
+"@studiometa/eslint-config@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@studiometa/eslint-config/-/eslint-config-1.1.2.tgz#0cf01c93c89d3f58506802db1a760caedc9a5ed6"
+  integrity sha512-TotRI/MGbgESKTWifEyLPHbU9noGTFGXW+qfcy3845eRcAGlGRQ2KXfCZzNWl9JPelKcOcdk/8CCJgRILssK0Q==
   dependencies:
     eslint "^5.9.0"
     eslint-config-airbnb-base "^13.1.0"
