@@ -1,5 +1,6 @@
 import { src as source, dest } from 'gulp';
 import { resolve } from 'path';
+import isArray from 'lodash/isArray';
 import sass from 'gulp-sass';
 import cleanCss from 'gulp-clean-css';
 import browserSync from 'browser-sync';
@@ -42,6 +43,13 @@ export const createStylesBuilder = (options) => {
       }),
     },
   };
+
+  // Merge defaults PostCSS plugins with the custom ones
+  if ('postcssPlugins' in options && isArray(options.postcssPlugins)) {
+    defaults.postcssPlugins.forEach(plugin => (
+      options.postcssPlugins.push(plugin)
+    ));
+  }
 
   // Merge custom options with default options
   const {
