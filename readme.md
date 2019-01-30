@@ -42,8 +42,8 @@ module.exports = config.create({
     dist: './tests/dist/styles',
   },
   scripts: {
-    src: './tests/src/scripts/**/*.js',
-    dist: './tests/dist/scripts/',
+    src: './tests/src/scripts',
+    dist: './tests/dist/scripts',
   },
   server: true,
 });
