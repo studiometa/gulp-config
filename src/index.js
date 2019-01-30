@@ -106,18 +106,18 @@ export const create = (options) => {
     ('server' in options)
     && (isObject(options.server) || options.server === true)
   ) {
-    const customOptions = isObject(options.server)
+    options.server = isObject(options.server)
       ? options.server
-      : {};
+      : { watchers: [] };
 
-    // Push custom watchers to the global watchers array
-    if ('watchers' in customOptions && isArray(customOptions.watchers)) {
-      customOptions.watchers.forEach(watcher => watchers.push(watcher));
+    // We add the default watchers to the options `watchers` array, but we have
+    // to make sure it exists in the first place
+    if (options.server.watchers === undefined) {
+      options.server.watchers = [];
     }
+    watchers.forEach(watcher => options.server.watchers.push(watcher));
 
-    const serverOptions = merge({}, customOptions, { watchers });
-
-    const [ serverName, serverTask ] = createServer(serverOptions);
+    const [ serverName, serverTask ] = createServer(options.server);
     serverTasksNames.push(serverName);
     tasks[serverName] = serverTask;
   }
