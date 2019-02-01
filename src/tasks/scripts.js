@@ -6,6 +6,7 @@ import sourcemaps from 'gulp-sourcemaps';
 import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
+import prettyError from '../utils/pretty-error';
 
 /**
  * Create the `scripts-build` Gulp task
@@ -29,10 +30,6 @@ export const createScriptsBuilder = (options) => {
         drop_console: true,
       },
     },
-    uglifyErrorHandler: ({ message }) => {
-      console.log(message);
-      notify.onError({ message });
-    },
   };
 
   /** @type {Object} Merge the defaults and custom options */
@@ -41,7 +38,6 @@ export const createScriptsBuilder = (options) => {
     glob,
     dist,
     uglifyOptions,
-    uglifyErrorHandler,
   } = merge({}, defaults, options);
 
   return [
@@ -50,7 +46,10 @@ export const createScriptsBuilder = (options) => {
       source(resolve(src, glob))
         .pipe(cache(name))
         .pipe(sourcemaps.init())
-        .pipe(uglify(uglifyOptions).on('error', uglifyErrorHandler))
+        .pipe(uglify(uglifyOptions).on('error', function err(error) {
+          prettyError.render(error, true);
+          return this.emit('end');
+        }))
         .pipe(sourcemaps.write('maps'))
         .pipe(dest(dist))
         .pipe(notify({
@@ -65,7 +64,6 @@ export const createScriptsBuilder = (options) => {
       glob,
       dist,
       uglifyOptions,
-      uglifyErrorHandler,
     },
   ];
 };
