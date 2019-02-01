@@ -4999,7 +4999,7 @@ node-gyp@^3.8.0:
     tar "^2.0.0"
     which "1"
 
-node-notifier@^5.2.1:
+node-notifier@^5.2.1, node-notifier@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/node-notifier/-/node-notifier-5.3.0.tgz#c77a4a7b84038733d5fb351aafd8a268bfe19a01"
   integrity sha512-AhENzCSGZnZJgBARsUjnQ7DnZbzyP+HxlVXuD0xqAnvL8q+OqtSX7lGg9e8nHzwXkMMXNdVeqq4E2M3EUAqX6Q==

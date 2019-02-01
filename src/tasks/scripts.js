@@ -6,7 +6,7 @@ import sourcemaps from 'gulp-sourcemaps';
 import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
-import prettyError from '../utils/pretty-error';
+import errorHandler from '../utils/error-handler';
 
 /**
  * Create the `scripts-build` Gulp task
@@ -46,10 +46,7 @@ export const createScriptsBuilder = (options) => {
       source(resolve(src, glob))
         .pipe(cache(name))
         .pipe(sourcemaps.init())
-        .pipe(uglify(uglifyOptions).on('error', function err(error) {
-          prettyError.render(error, true);
-          return this.emit('end');
-        }))
+        .pipe(uglify(uglifyOptions).on('error', errorHandler))
         .pipe(sourcemaps.write('maps'))
         .pipe(dest(dist))
         .pipe(notify({
