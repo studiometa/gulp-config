@@ -90,6 +90,12 @@ export const create = (options) => {
         builderName,
         linterName,
       ],
+      callbacks: [
+        {
+          event: 'change',
+          callback: server => server.reload(),
+        },
+      ],
     });
 
     tasks[builderName] = builderTask;
