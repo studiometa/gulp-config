@@ -14,6 +14,7 @@ import sassInheritance from 'gulp-sass-multi-inheritance';
 import cache from 'gulp-cached';
 import filter from 'gulp-filter';
 import magicImporter from 'node-sass-magic-importer';
+import errorHandler from '../utils/error-handler';
 
 /**
  * Create the styles compilation task
@@ -71,7 +72,7 @@ export const createStylesBuilder = (options) => {
           !/\/_/.test(file.path) || !/^_/.test(file.relative)
         )))
         .pipe(sourcemaps.init())
-        .pipe(sass.sync(gulpSassOptions).on('error', sass.logError))
+        .pipe(sass.sync(gulpSassOptions).on('error', errorHandler))
         .pipe(postcss(postCssPlugins))
         .pipe(cleanCss(cleanCssOptions))
         .pipe(sourcemaps.write('map'))
