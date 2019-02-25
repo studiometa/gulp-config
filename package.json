@@ -1,6 +1,6 @@
 {
   "name": "@studiometa/gulp-config",
-  "version": "1.1.5-beta.2",
+  "version": "1.1.5-beta.3",
   "description": "Gulp configuration",
   "main": "dist/index.js",
   "scripts": {
@@ -59,6 +59,6 @@
     "@studiometa/stylelint-config": "^1.0.1"
   },
   "engines": {
-    "node": "^9"
+    "node": ">=9"
   }
 }
