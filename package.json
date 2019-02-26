@@ -6,7 +6,9 @@
   "scripts": {
     "test": "gulp",
     "compile": "babel --plugins @babel/plugin-transform-runtime --out-dir dist/ src/",
-    "prepare": "npm run compile"
+    "prepare": "npm run compile",
+    "lint": "eslint src/",
+    "fix": "eslint --fix src/"
   },
   "repository": {
     "type": "git",
