@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/studiometa/gulp-config#readme",
   "dependencies": {
+    "@babel/runtime": "^7.3.4",
     "autoprefixer": "^9.4.5",
     "browser-sync": "^2.26.3",
     "eslint": "^5.12.0",
