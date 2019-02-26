@@ -9,6 +9,7 @@ A small helper to simplify the usage of Gulp to compile, lint, fix, compress and
     * [`glob`](#stylesglob-string)
     * [`dist`](#stylesdist-string)
     * [`postCssPlugins`](#stylespostcssplugins-array)
+    * [`cleanCssOptions`](#stylescleancssoptions-object)
     * [`styleLintOptions`](#stylesstylelintoptions-object)
   + [Scripts](#scripts)
     * [`src`](#scriptssrc-string)
@@ -238,8 +239,25 @@ Options for the [`browser-sync`]() plugin.
   },
 }
 ```
-
 > If your project is using a `.env` file, you can load it in your `gulpfile.js` file with the [`dotenv`](https://github.com/motdotla/dotenv) package and set a variable named `APP_HOST` to take advantage of the default browser-sync configuration. The server setup by browser-sync will then be proxied on the port 3000 of the host you defined, you will have live-reload enabled by accessing `http://APP_HOST:3000`.
+
+Example of configuration to enable browserSync with `https://`:
+
+```js
+{
+  browserSyncOptions: {
+    proxy: 'https://local.fqdn.com',
+    https: {
+      key: 'path/to/your/key.pem',
+      cert: '/path/to/your/cert.pem',
+    },
+  },
+}
+```
+> You can easliy create a valid certificate for your local domain `local.fqdn.com` with the help of [`mkcert`](https://github.com/FiloSottile/mkcert) and the following command: 
+> ```bash
+> mkcert local.fqdn.com fqdn.com localhost 127.0.0.1
+> ```
 
 #### `server.watchers` _(Array)_
 
