@@ -3,7 +3,8 @@
 A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files.^
 
 - [Usage](#usage)
-- [Options](#options)
+  + [CLI options](#cli-options)
+- [Configuration](#configuration)
   + [Styles](#styles)
     * [`src`](#stylessrc-string)
     * [`glob`](#stylesglob-string)
@@ -64,7 +65,28 @@ The `gulp` default tasks will execute the build and lint tasks before the server
 
 The server tasks watch automatically for changes in the styles and scripts files to re-trigger the build and lint tasks.
 
-## Options
+### CLI options
+
+All the [defaults Gulp CLI flags](https://github.com/gulpjs/gulp-cli#flags) can be used when running a task, with the following custom ones:
+
+<table>
+  <thead>
+    <tr>
+      <th width="25%">Flag</th>
+      <th width="15%">Short Flag</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>--diff-only</td>
+      <td></td>
+      <td>Execute the given task only on files listed in your `git diff`.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration
 
 The main options object can contain 3 different keys : [`styles`](#styles), [`scripts`](#scripts) and [`server`](#server). If one of them is omitted, the corresponding tasks won't be created. Find below the description and default values for each configuration object.
 
