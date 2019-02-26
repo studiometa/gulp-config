@@ -20,7 +20,7 @@ function fileHasChanged(file, changedFiles) {
  * Filter file by their diff status
  * @return {Vinyl}
  */
-export default function diff() {
+export default function diff(isDiffOnly = false) {
   const cmd = 'git diff --name-only';
   const changedFiles = execSync(cmd, { encoding: 'utf8' })
     .split('\n')
@@ -29,15 +29,15 @@ export default function diff() {
   const formattedChangedFiles = changedFiles.map(file => `modified:   ${file}`)
     .join('\n    ');
 
-  log.warn(`
+  if (isDiffOnly) {
+    log.warn(`
 
-    ⚡️
     The '${colors.green('--diff-only')}' option is enabled, the task will only
     process the following matching modified files:
 
     ${colors.red(formattedChangedFiles)}
-  `);
-
+    `);
+  }
 
   return through.obj(
     /* eslint-disable-next-line */
@@ -53,8 +53,10 @@ export default function diff() {
         return;
       }
 
+      const hasChanged = fileHasChanged(file, changedFiles);
+
       try {
-        if (fileHasChanged(file, changedFiles)) {
+        if ((isDiffOnly && hasChanged) || !isDiffOnly) {
           this.push(file);
         }
       } catch (err) {

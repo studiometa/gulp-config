@@ -14,7 +14,6 @@ import sassInheritance from 'gulp-sass-multi-inheritance';
 import cache from 'gulp-cached';
 import filter from 'gulp-filter';
 import magicImporter from 'node-sass-magic-importer';
-import gif from 'gulp-if';
 import errorHandler from '../utils/error-handler';
 import args from '../utils/arguments';
 import diff from '../plugins/gulp-diff';
@@ -69,7 +68,7 @@ export const createStylesBuilder = (options) => {
     name,
     () => (
       source(resolve(src, glob))
-        .pipe(gif(args.diffOnly, diff()))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(sassInheritance({ dir: src }))
         .pipe(filter(file => (
@@ -141,7 +140,7 @@ export const createStylesLinter = (options) => {
     name,
     () => (
       source(resolve(src, glob))
-        .pipe(gif(args.diffOnly, diff()))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
     ),
@@ -193,7 +192,7 @@ export const createStylesFormatter = (options) => {
     name,
     () => (
       source(resolve(src, glob))
-        .pipe(gif(args.diffOnly, diff()))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
         .pipe(dest(src))
