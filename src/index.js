@@ -1,7 +1,5 @@
 import { series } from 'gulp';
 import isObject from 'lodash/isObject';
-import isArray from 'lodash/isArray';
-import merge from 'lodash/merge';
 import { createServer } from './tasks/server';
 import {
   createStylesBuilder,

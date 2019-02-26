@@ -30,11 +30,9 @@ Error: ${message}
  * @param  {Error} error The error to format
  * @return {Error}       The formatted error
  */
-const formatError = (error) => {
-  return 'cause' in error
-    ? formatUglifyError(error)
-    : error;
-};
+const formatError = error => ('cause' in error
+  ? formatUglifyError(error)
+  : error);
 
 
 /**
@@ -52,4 +50,4 @@ export default function errorHandler(error) {
   });
 
   return this.emit('end');
-};
+}
