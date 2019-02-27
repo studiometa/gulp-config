@@ -30,13 +30,21 @@ export default function diff(isDiffOnly = false) {
     .join('\n    ');
 
   if (isDiffOnly) {
-    log.warn(`
+    if (changedFiles.length > 0) {
+      log(`
 
     The '${colors.green('--diff-only')}' option is enabled, the task will only
     process the following matching modified files:
 
     ${colors.red(formattedChangedFiles)}
-    `);
+      `);
+    } else {
+      log(`
+
+    The '${colors.green('--diff-only')}' option is enabled, but you do not have
+    any modified files in your repository, nothing will happen.
+      `);
+    }
   }
 
   return through.obj(
