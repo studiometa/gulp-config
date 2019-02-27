@@ -4,6 +4,7 @@ import commandLineArgs from 'command-line-args';
 const optionsDefintions = [
   {
     name: 'diff-only',
+    alias: 'd',
     type: Boolean,
   },
 ];

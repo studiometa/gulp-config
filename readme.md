@@ -80,7 +80,7 @@ All the [defaults Gulp CLI flags](https://github.com/gulpjs/gulp-cli#flags) can 
   <tbody>
     <tr>
       <td>--diff-only</td>
-      <td></td>
+      <td>-d</td>
       <td>Execute the given task only on files listed in your `git diff`.</td>
     </tr>
   </tbody>
