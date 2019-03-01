@@ -6,6 +6,10 @@ import sourcemaps from 'gulp-sourcemaps';
 import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
+import babel from 'gulp-babel';
+import gif from 'gulp-if';
+import log from 'fancy-log';
+import colors from 'gulp-cli/lib/shared/ansi';
 import errorHandler from '../utils/error-handler';
 import diff from '../plugins/gulp-diff';
 import args from '../utils/arguments';
@@ -32,6 +36,9 @@ export const createScriptsBuilder = (options) => {
         drop_console: true,
       },
     },
+    babelOptions: {
+      presets: [ '@babel/preset-env' ],
+    },
   };
 
   /** @type {Object} Merge the defaults and custom options */
@@ -40,6 +47,7 @@ export const createScriptsBuilder = (options) => {
     glob,
     dist,
     uglifyOptions,
+    babelOptions,
   } = merge({}, defaults, options);
 
   return [
@@ -47,6 +55,7 @@ export const createScriptsBuilder = (options) => {
     () => (
       source(resolve(src, glob))
         .pipe(diff(args.diffOnly))
+        .pipe(gif(args.es6, babel(babelOptions)))
         .pipe(cache(name))
         .pipe(sourcemaps.init())
         .pipe(uglify(uglifyOptions).on('error', errorHandler))
@@ -157,3 +166,9 @@ export const createScriptsFormatter = (options) => {
     ),
   ];
 };
+
+if (args.es6) {
+  log(`
+    The '${colors.green('--es6')}' option is enabled.
+  `);
+}
