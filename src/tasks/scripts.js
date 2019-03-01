@@ -36,6 +36,7 @@ export const createScriptsBuilder = (options) => {
         drop_console: true,
       },
     },
+    es6: false,
     babelOptions: {
       presets: [ '@babel/preset-env' ],
     },
@@ -48,6 +49,7 @@ export const createScriptsBuilder = (options) => {
     dist,
     uglifyOptions,
     babelOptions,
+    es6,
   } = merge({}, defaults, options);
 
   return [
@@ -55,7 +57,7 @@ export const createScriptsBuilder = (options) => {
     () => (
       source(resolve(src, glob))
         .pipe(diff(args.diffOnly))
-        .pipe(gif(args.es6, babel(babelOptions)))
+        .pipe(gif(es6, babel(babelOptions)))
         .pipe(cache(name))
         .pipe(sourcemaps.init())
         .pipe(uglify(uglifyOptions).on('error', errorHandler))
@@ -166,9 +168,3 @@ export const createScriptsFormatter = (options) => {
     ),
   ];
 };
-
-if (args.es6) {
-  log(`
-    The '${colors.green('--es6')}' option is enabled.
-  `);
-}
