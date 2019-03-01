@@ -17,7 +17,10 @@ A small helper to simplify the usage of Gulp to compile, lint, fix, compress and
     * [`glob`](#scriptsglob-string)
     * [`dist`](##scriptsdist-string)
     * [`uglifyOptions`](#scriptsuglifyoptions-object)
-    * [`uglifyErrorHandler`](#scriptsuglifyerrorhandler-function)
+    * [`es6`](#scriptses6-boolean)
+    * [`babelOptions`](#scriptsbabeloptions-object)
+    * [`esModules`](#scriptsesmodules-boolean)
+    * [`rollupOptions`](#scriptsrollupoptions-object)
     * [`ESLintOptions`](#scriptseslintoptions-object)
   + [Server](#server)
     * [`browserSyncOptions`](#serverbrowsersyncoptions-object)
@@ -241,18 +244,26 @@ Options for the [`gulp-babel`](https://github.com/babel/gulp-babel) plugin.
 }
 ```
 
-#### `scripts.uglifyErrorHandler` _(Function)_
+#### `scripts.esModules` _(Boolean)_
 
-Handler for the `error` event of the `gulp-uglify` plugin.
+Enable/Disable es6 modules resolution with [Rollup](https://rollupjs.org/).
 
 ```js
 {
-  uglifyErrorHandler: ({ message }) => {
-    console.log(message);
-    notify.onError({ message });
-  },
+  esModules: false,
 }
 ```
+
+#### `scripts.rollupOptions` _(Object)_
+
+Options for the [`gulp-rollup`](https://github.com/babel/gulp-babel) plugin.
+
+```js
+{
+  rollupOptions: {},
+}
+```
+> The default options object is empty because of the per project specificity of a Rollup configuration.
 
 #### `scripts.ESLintOptions` _(Object)_
 
