@@ -219,6 +219,28 @@ Options for the [`gulp-uglify`](https://github.com/terinjokes/gulp-uglify/#optio
 }
 ```
 
+#### `scripts.es6` _(Boolean)_
+
+Enable/Disable es6 scripts compilation.
+
+```js
+{
+  es6: false,
+}
+```
+
+#### `scripts.babelOptions` _(Object)_
+
+Options for the [`gulp-babel`](https://github.com/babel/gulp-babel) plugin.
+
+```js
+{
+  babelOptions: {
+    presets: [ '@babel/preset-env' ],
+  },
+}
+```
+
 #### `scripts.uglifyErrorHandler` _(Function)_
 
 Handler for the `error` event of the `gulp-uglify` plugin.
