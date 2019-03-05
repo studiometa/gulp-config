@@ -2,6 +2,7 @@ import PrettyError from 'pretty-error';
 import notifier from 'node-notifier';
 
 const prettyError = new PrettyError();
+prettyError.skipNodeFiles();
 
 /**
  * Format a GulpUglifyError to display the origin of the error
@@ -30,7 +31,7 @@ Error: ${message}
  * @param  {Error} error The error to format
  * @return {Error}       The formatted error
  */
-const formatError = error => ('cause' in error
+const formatError = error => (error && 'cause' in error
   ? formatUglifyError(error)
   : error);
 
@@ -49,5 +50,5 @@ export default function errorHandler(error) {
     message: formatted.message,
   });
 
-  return this.emit('end');
+  return this ? this.emit('end') : null;
 }

@@ -7,8 +7,9 @@ import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
 import babel from 'gulp-babel';
-import rollup from 'gulp-rollup';
+// import rollup from 'gulp-rollup';
 import gif from 'gulp-if';
+import webpack from 'webpack-stream';
 import errorHandler from '../utils/error-handler';
 import diff from '../plugins/gulp-diff';
 import args from '../utils/arguments';
@@ -40,7 +41,12 @@ export const createScriptsBuilder = (options) => {
       presets: [ '@babel/preset-env' ],
     },
     esModules: false,
-    rollupOptions: {},
+    rollupOptions: {
+      allowRealFiles: true,
+    },
+    webpackOptions: {
+      mode: 'development',
+    },
   };
 
   /** @type {Object} Merge the defaults and custom options */
@@ -52,15 +58,29 @@ export const createScriptsBuilder = (options) => {
     es6,
     babelOptions,
     esModules,
-    rollupOptions,
+    // rollupOptions,
+    webpackOptions,
   } = merge({}, defaults, options);
+
+  // Force webpack mode to production unless specified otherwise
+  webpackOptions.mode = webpackOptions.forceDevMode
+    ? 'development'
+    : 'production';
 
   return [
     name,
     () => source(resolve(src, glob))
       .pipe(diff(args.diffOnly))
       .pipe(
-        gif(es6 && esModules, rollup(rollupOptions).on('error', errorHandler))
+        gif(
+          es6 && esModules,
+          webpack(webpackOptions, null, (err, stats) => {
+            const { errors, warnings } = stats.compilation;
+            [ ...errors, ...warnings ].forEach(errorHandler.bind(this));
+          }).on('error', function err() {
+            this.emit('end');
+          })
+        )
       )
       .pipe(gif(es6, babel(babelOptions)))
       .pipe(cache(name))
