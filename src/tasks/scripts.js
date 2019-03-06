@@ -8,7 +8,8 @@ import notify from 'gulp-notify';
 import cache from 'gulp-cached';
 import babel from 'gulp-babel';
 import gif from 'gulp-if';
-import webpack from 'webpack-stream';
+import webpack from 'webpack';
+import webpackStream from 'webpack-stream';
 import errorHandler from '../utils/error-handler';
 import diff from '../plugins/gulp-diff';
 import args from '../utils/arguments';
@@ -69,7 +70,7 @@ export const createScriptsBuilder = (options) => {
       .pipe(
         gif(
           es6 && esModules,
-          webpack(webpackOptions, null, (err, stats) => {
+          webpackStream(webpackOptions, webpack, (err, stats) => {
             const { errors, warnings } = stats.compilation;
             [ ...errors, ...warnings ].forEach(errorHandler.bind(this));
           }).on('error', function err() {
