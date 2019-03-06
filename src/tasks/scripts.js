@@ -7,7 +7,6 @@ import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
 import babel from 'gulp-babel';
-// import rollup from 'gulp-rollup';
 import gif from 'gulp-if';
 import webpack from 'webpack-stream';
 import errorHandler from '../utils/error-handler';
@@ -41,9 +40,6 @@ export const createScriptsBuilder = (options) => {
       presets: [ '@babel/preset-env' ],
     },
     esModules: false,
-    rollupOptions: {
-      allowRealFiles: true,
-    },
     webpackOptions: {
       mode: 'development',
     },
@@ -58,7 +54,6 @@ export const createScriptsBuilder = (options) => {
     es6,
     babelOptions,
     esModules,
-    // rollupOptions,
     webpackOptions,
   } = merge({}, defaults, options);
 

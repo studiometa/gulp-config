@@ -20,7 +20,7 @@ A small helper to simplify the usage of Gulp to compile, lint, fix, compress and
     * [`es6`](#scriptses6-boolean)
     * [`babelOptions`](#scriptsbabeloptions-object)
     * [`esModules`](#scriptsesmodules-boolean)
-    * [`rollupOptions`](#scriptsrollupoptions-object)
+    * [`webpackOptions`](#scriptswebpackoptions-object)
     * [`ESLintOptions`](#scriptseslintoptions-object)
   + [Server](#server)
     * [`browserSyncOptions`](#serverbrowsersyncoptions-object)
@@ -246,7 +246,7 @@ Options for the [`gulp-babel`](https://github.com/babel/gulp-babel) plugin.
 
 #### `scripts.esModules` _(Boolean)_
 
-Enable/Disable es6 modules resolution with [Rollup](https://rollupjs.org/).
+Enable/Disable es6 modules resolution with [Webpack](https://webpack.js.org/).
 
 ```js
 {
@@ -254,16 +254,17 @@ Enable/Disable es6 modules resolution with [Rollup](https://rollupjs.org/).
 }
 ```
 
-#### `scripts.rollupOptions` _(Object)_
+#### `scripts.webpackOptions` _(Object)_
 
-Options for the [`gulp-rollup`](https://github.com/babel/gulp-babel) plugin.
+Options for the [`webpack-stream`](https://github.com/shama/webpack-stream) plugin.
 
 ```js
 {
-  rollupOptions: {},
+  webpackOptions: {
+    mode: 'development',
+  },
 }
 ```
-> The default options object is empty because of the per project specificity of a Rollup configuration.
 
 #### `scripts.ESLintOptions` _(Object)_
 

@@ -10,16 +10,6 @@ module.exports = create({
     dist: './tests/dist/scripts',
     es6: true,
     esModules: true,
-    rollupOptions: {
-      input: './tests/src/scripts/error.js',
-      output: {
-        format: 'iife',
-        globals: {
-          lodash: 'lodash',
-          jquery: 'jquery',
-        },
-      },
-    },
     webpackOptions: {
       entry: {
         esModules: './tests/src/scripts/es-modules.js',
