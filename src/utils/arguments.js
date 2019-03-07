@@ -7,6 +7,12 @@ const optionsDefintions = [
     alias: 'd',
     type: Boolean,
   },
+  {
+    name: 'quiet',
+    alias: 'q',
+    type: Boolean,
+    defaultOption: false,
+  },
 ];
 
 // Export the parsed command line options

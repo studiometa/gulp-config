@@ -13,6 +13,7 @@ import styleLint from 'gulp-stylelint';
 import sassInheritance from 'gulp-sass-multi-inheritance';
 import cache from 'gulp-cached';
 import filter from 'gulp-filter';
+import gif from 'gulp-if';
 import magicImporter from 'node-sass-magic-importer';
 import errorHandler from '../utils/error-handler';
 import args from '../utils/arguments';
@@ -81,12 +82,12 @@ export const createStylesBuilder = (options) => {
         .pipe(sourcemaps.write('map'))
         .pipe(dest(dist))
         .pipe(browserSync.stream())
-        .pipe(notify({
+        .pipe(gif(!args.quiet, notify({
           title: `gulp ${name}`,
           message: ({ relative }) => (
             `The file ${relative} has been updated.`
           ),
-        }))
+        })))
     ),
     {
       src,
@@ -196,12 +197,12 @@ export const createStylesFormatter = (options) => {
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
         .pipe(dest(src))
-        .pipe(notify({
+        .pipe(gif(!args.quiet, notify({
           title: `gulp ${name}`,
           message: ({ relative }) => (
             `The file ${relative} has been formatted with StyleLint.`
           ),
-        }))
+        })))
     ),
   ];
 };

@@ -6,6 +6,7 @@ import sourcemaps from 'gulp-sourcemaps';
 import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
+import gif from 'gulp-if';
 import errorHandler from '../utils/error-handler';
 import diff from '../plugins/gulp-diff';
 import args from '../utils/arguments';
@@ -52,12 +53,12 @@ export const createScriptsBuilder = (options) => {
         .pipe(uglify(uglifyOptions).on('error', errorHandler))
         .pipe(sourcemaps.write('maps'))
         .pipe(dest(dist))
-        .pipe(notify({
+        .pipe(gif(!args.quiet, notify({
           title: `gulp ${name}`,
           message: ({ relative }) => (
             `The file ${relative} has been updated.`
           ),
-        }))
+        })))
     ),
     {
       src,
@@ -148,12 +149,12 @@ export const createScriptsFormatter = (options) => {
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
         .pipe(dest(src))
-        .pipe(notify({
+        .pipe(gif(!args.quiet, notify({
           title: `gulp ${name}`,
           message: ({ relative }) => (
             `The file ${relative} has been formatted with ESLint.`
           ),
-        }))
+        })))
     ),
   ];
 };
