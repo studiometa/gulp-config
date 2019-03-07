@@ -261,7 +261,19 @@ Options for the [`webpack-stream`](https://github.com/shama/webpack-stream) plug
 ```js
 {
   webpackOptions: {
-    mode: 'development',
+    mode: 'production',
+    devtool: false,
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          use: {
+            loader: 'babel-loader',
+          },
+        },
+      ],
+    },
   },
 }
 ```

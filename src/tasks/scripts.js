@@ -42,7 +42,19 @@ export const createScriptsBuilder = (options) => {
     },
     esModules: false,
     webpackOptions: {
-      mode: 'development',
+      mode: 'production',
+      devtool: false,
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+              loader: 'babel-loader',
+            },
+          },
+        ],
+      },
     },
   };
 
@@ -58,15 +70,11 @@ export const createScriptsBuilder = (options) => {
     webpackOptions,
   } = merge({}, defaults, options);
 
-  // Force webpack mode to production unless specified otherwise
-  webpackOptions.mode = webpackOptions.forceDevMode
-    ? 'development'
-    : 'production';
-
   return [
     name,
     () => source(resolve(src, glob))
       .pipe(diff(args.diffOnly))
+      .pipe(cache(name))
       .pipe(
         gif(
           es6 && esModules,
@@ -78,9 +86,8 @@ export const createScriptsBuilder = (options) => {
           })
         )
       )
-      .pipe(gif(es6, babel(babelOptions)))
-      .pipe(cache(name))
       .pipe(sourcemaps.init())
+      .pipe(gif(es6 && !esModules, babel(babelOptions)))
       .pipe(uglify(uglifyOptions).on('error', errorHandler))
       .pipe(sourcemaps.write('maps'))
       .pipe(dest(dist))

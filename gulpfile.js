@@ -15,7 +15,7 @@ module.exports = create({
         esModules: './tests/src/scripts/es-modules.js',
       },
       output: {
-        filename: 'bundle.js',
+        filename: '[name].js',
       },
     },
   },
