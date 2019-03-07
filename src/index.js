@@ -19,7 +19,7 @@ import {
  *                          for all available possibilities
  * @return {Object}         An object containing all the tasks
  */
-export const create = (options) => {
+export const create = options => {
   /** @type {Array} An array for the builder tasks */
   const buildTasksNames = [];
 
@@ -37,27 +37,22 @@ export const create = (options) => {
 
   // Generate styles tasks
   if ('styles' in options) {
-    const [
-      builderName,
-      builderTask,
-      builderOptions,
-    ] = createStylesBuilder(options.styles);
-    const [ linterName, linterTask ] = createStylesLinter(options.styles);
-    const [ formatName, formatTask ] = createStylesFormatter(options.styles);
+    const [builderName, builderTask, builderOptions] = createStylesBuilder(
+      options.styles
+    );
+    const [linterName, linterTask] = createStylesLinter(options.styles);
+    const [formatName, formatTask] = createStylesFormatter(options.styles);
 
     buildTasksNames.push(builderName);
     lintTasksNames.push(linterName);
 
     // Add styles watchers
     watchers.push({
-      files: [ builderOptions.glob ],
+      files: [builderOptions.glob],
       options: {
         cwd: builderOptions.src,
       },
-      tasks: [
-        builderName,
-        linterName,
-      ],
+      tasks: [builderName, linterName],
     });
 
     tasks[builderName] = builderTask;
@@ -67,32 +62,27 @@ export const create = (options) => {
 
   // Generate scripts tasks
   if ('scripts' in options) {
-    const [
-      builderName,
-      builderTask,
-      builderOptions,
-    ] = createScriptsBuilder(options.scripts);
-    const [ linterName, linterTask ] = createScriptsLinter(options.scripts);
-    const [ formatName, formatTask ] = createScriptsFormatter(options.scripts);
+    const [builderName, builderTask, builderOptions] = createScriptsBuilder(
+      options.scripts
+    );
+    const [linterName, linterTask] = createScriptsLinter(options.scripts);
+    const [formatName, formatTask] = createScriptsFormatter(options.scripts);
 
     buildTasksNames.push(builderName);
     lintTasksNames.push(linterName);
 
     // Trigger build and lint on source files when they change
     watchers.push({
-      files: [ builderOptions.glob ],
+      files: [builderOptions.glob],
       options: {
         cwd: builderOptions.src,
       },
-      tasks: [
-        builderName,
-        linterName,
-      ],
+      tasks: [builderName, linterName],
     });
 
     // Trigger browser reload when any dist files changes
     watchers.push({
-      files: [ builderOptions.glob ],
+      files: [builderOptions.glob],
       options: {
         cwd: builderOptions.dist,
       },
@@ -115,8 +105,8 @@ export const create = (options) => {
   // so we need to check it is true when it is not an object
   // before registering any task.
   if (
-    ('server' in options)
-    && (isObject(options.server) || options.server === true)
+    'server' in options &&
+    (isObject(options.server) || options.server === true)
   ) {
     options.server = isObject(options.server)
       ? options.server
@@ -129,20 +119,16 @@ export const create = (options) => {
     }
     watchers.forEach(watcher => options.server.watchers.push(watcher));
 
-    const [ serverName, serverTask ] = createServer(options.server);
+    const [serverName, serverTask] = createServer(options.server);
     serverTasksNames.push(serverName);
     tasks[serverName] = serverTask;
   }
 
   // Register default task
-  tasks.default = async () => series(
-    ...lintTasksNames,
-    ...buildTasksNames,
-    ...serverTasksNames
-  )();
+  tasks.default = async () =>
+    series(...lintTasksNames, ...buildTasksNames, ...serverTasksNames)();
 
   return tasks;
 };
-
 
 export default create;

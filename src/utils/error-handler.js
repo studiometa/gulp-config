@@ -9,7 +9,7 @@ prettyError.skipNodeFiles();
  * @param  {GulpUglifyError} error A gulp-uglify error object
  * @return {GulpUglifyError}       A formatted gulp-uglify error
  */
-const formatUglifyError = (error) => {
+const formatUglifyError = error => {
   const { message, line } = error.cause;
 
   const formatted = `
@@ -24,17 +24,14 @@ Error: ${message}
   return error;
 };
 
-
 /**
  * Format a given error with the correct formatter
  *
  * @param  {Error} error The error to format
  * @return {Error}       The formatted error
  */
-const formatError = error => (error && 'cause' in error
-  ? formatUglifyError(error)
-  : error);
-
+const formatError = error =>
+  error && 'cause' in error ? formatUglifyError(error) : error;
 
 /**
  * Custom error handler

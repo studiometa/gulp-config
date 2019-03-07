@@ -2,7 +2,6 @@ import { series, watch } from 'gulp';
 import browserSync from 'browser-sync';
 import merge from 'lodash/merge';
 
-
 /**
  * Regiester all the given callbacks on the given watcher
  *
@@ -18,14 +17,14 @@ const registerWatcherCallbacks = (watcher, callbacks) => {
     callback: () => {},
   };
 
-  callbacks.map(callback => ({ ...defaultCallback, ...callback }))
+  callbacks
+    .map(callback => ({ ...defaultCallback, ...callback }))
     .forEach(({ event, callback }) => {
       watcher.on(event, (path, stats) => {
         callback(browserSync, path, stats);
       });
     });
 };
-
 
 /**
  * Register all the watcher defined in the configuration
@@ -35,7 +34,7 @@ const registerWatcherCallbacks = (watcher, callbacks) => {
  *                          the callbacks to call
  * @return {void}
  */
-const registerWatchers = (watchers) => {
+const registerWatchers = watchers => {
   /** @type {Object} Definition of a watcher object */
   const defaultWatcher = {
     files: [],
@@ -44,22 +43,18 @@ const registerWatchers = (watchers) => {
     callbacks: [],
   };
 
-  watchers.map(watcher => ({ ...defaultWatcher, ...watcher }))
-    .forEach(({
-      files,
-      options,
-      tasks,
-      callbacks,
-    }) => {
+  watchers
+    .map(watcher => ({ ...defaultWatcher, ...watcher }))
+    .forEach(({ files, options, tasks, callbacks }) => {
       // Watch all `files`, with the given `options` and the `tasks` to execute
-      const watcher = tasks.length > 0
-        ? watch(files, options, series(...tasks))
-        : watch(files, options);
+      const watcher =
+        tasks.length > 0
+          ? watch(files, options, series(...tasks))
+          : watch(files, options);
       // Register all defined `callbacks` for the watcher
       registerWatcherCallbacks(watcher, callbacks);
     });
 };
-
 
 /**
  * Create the `serve` Gulp task
@@ -68,7 +63,7 @@ const registerWatchers = (watchers) => {
  *                          object below for all available options
  * @return {Array}          Array of the name and function of the task
  */
-export const createServer = (options) => {
+export const createServer = options => {
   /** @type {String} The task's name */
   const name = 'serve';
 
@@ -83,10 +78,7 @@ export const createServer = (options) => {
   };
 
   /** @type {Object} Merge the defaults and custom options */
-  const {
-    browserSyncOptions,
-    watchers,
-  } = merge({}, defaults, options);
+  const { browserSyncOptions, watchers } = merge({}, defaults, options);
 
   return [
     name,
@@ -98,7 +90,6 @@ export const createServer = (options) => {
     },
   ];
 };
-
 
 // Export the only exported function by default
 export default createServer;

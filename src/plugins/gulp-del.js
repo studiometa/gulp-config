@@ -8,7 +8,7 @@ import colors from 'gulp-cli/lib/shared/ansi';
  * Delete the given path
  * @return {Vinyl}
  */
-export default function (path) {
+export default function(path) {
   log(`Deleting ${colors.magenta(path)}...`);
 
   try {
