@@ -6,6 +6,10 @@ import sourcemaps from 'gulp-sourcemaps';
 import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
+import babel from 'gulp-babel';
+import gif from 'gulp-if';
+import webpack from 'webpack';
+import webpackStream from 'webpack-stream';
 import errorHandler from '../utils/error-handler';
 import diff from '../plugins/gulp-diff';
 import args from '../utils/arguments';
@@ -32,6 +36,26 @@ export const createScriptsBuilder = (options) => {
         drop_console: true,
       },
     },
+    es6: false,
+    babelOptions: {
+      presets: [ '@babel/preset-env' ],
+    },
+    esModules: false,
+    webpackOptions: {
+      mode: 'production',
+      devtool: false,
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+              loader: 'babel-loader',
+            },
+          },
+        ],
+      },
+    },
   };
 
   /** @type {Object} Merge the defaults and custom options */
@@ -40,25 +64,39 @@ export const createScriptsBuilder = (options) => {
     glob,
     dist,
     uglifyOptions,
+    es6,
+    babelOptions,
+    esModules,
+    webpackOptions,
   } = merge({}, defaults, options);
 
   return [
     name,
-    () => (
-      source(resolve(src, glob))
-        .pipe(diff(args.diffOnly))
-        .pipe(cache(name))
-        .pipe(sourcemaps.init())
-        .pipe(uglify(uglifyOptions).on('error', errorHandler))
-        .pipe(sourcemaps.write('maps'))
-        .pipe(dest(dist))
-        .pipe(notify({
+    () => source(resolve(src, glob))
+      .pipe(diff(args.diffOnly))
+      .pipe(cache(name))
+      .pipe(
+        gif(
+          es6 && esModules,
+          webpackStream(webpackOptions, webpack, (err, stats) => {
+            const { errors, warnings } = stats.compilation;
+            [ ...errors, ...warnings ].forEach(errorHandler.bind(this));
+          }).on('error', function err() {
+            this.emit('end');
+          })
+        )
+      )
+      .pipe(sourcemaps.init())
+      .pipe(gif(es6 && !esModules, babel(babelOptions)))
+      .pipe(uglify(uglifyOptions).on('error', errorHandler))
+      .pipe(sourcemaps.write('maps'))
+      .pipe(dest(dist))
+      .pipe(
+        notify({
           title: `gulp ${name}`,
-          message: ({ relative }) => (
-            `The file ${relative} has been updated.`
-          ),
-        }))
-    ),
+          message: ({ relative }) => `The file ${relative} has been updated.`,
+        })
+      ),
     {
       src,
       glob,
@@ -67,7 +105,6 @@ export const createScriptsBuilder = (options) => {
     },
   ];
 };
-
 
 /**
  * Create the `scripts-lint` Gulp task
@@ -90,24 +127,17 @@ export const createScriptsLinter = (options) => {
   };
 
   /** @type {Object} Merge the defaults and custom options */
-  const {
-    src,
-    glob,
-    ESLintOptions,
-  } = merge({}, defaults, options);
+  const { src, glob, ESLintOptions } = merge({}, defaults, options);
 
   return [
     name,
-    () => (
-      source(resolve(src, glob))
-        .pipe(diff(args.diffOnly))
-        .pipe(cache(name))
-        .pipe(eslint(ESLintOptions))
-        .pipe(eslint.format())
-    ),
+    () => source(resolve(src, glob))
+      .pipe(diff(args.diffOnly))
+      .pipe(cache(name))
+      .pipe(eslint(ESLintOptions))
+      .pipe(eslint.format()),
   ];
 };
-
 
 /**
  * Create the `scripts-format` Gulp task
@@ -131,29 +161,23 @@ export const createScriptsFormatter = (options) => {
   };
 
   /** @type {Object} Merge the defaults and custom options */
-  const {
-    src,
-    glob,
-    ESLintOptions,
-  } = merge({}, defaults, options);
+  const { src, glob, ESLintOptions } = merge({}, defaults, options);
 
   // Make sure the `fix` option is activated
   ESLintOptions.fix = true;
 
   return [
     name,
-    () => (
-      source(resolve(src, glob))
-        .pipe(diff(args.diffOnly))
-        .pipe(cache(name))
-        .pipe(eslint(ESLintOptions))
-        .pipe(dest(src))
-        .pipe(notify({
+    () => source(resolve(src, glob))
+      .pipe(diff(args.diffOnly))
+      .pipe(cache(name))
+      .pipe(eslint(ESLintOptions))
+      .pipe(dest(src))
+      .pipe(
+        notify({
           title: `gulp ${name}`,
-          message: ({ relative }) => (
-            `The file ${relative} has been formatted with ESLint.`
-          ),
-        }))
-    ),
+          message: ({ relative }) => `The file ${relative} has been formatted with ESLint.`,
+        })
+      ),
   ];
 };

@@ -17,7 +17,10 @@ A small helper to simplify the usage of Gulp to compile, lint, fix, compress and
     * [`glob`](#scriptsglob-string)
     * [`dist`](##scriptsdist-string)
     * [`uglifyOptions`](#scriptsuglifyoptions-object)
-    * [`uglifyErrorHandler`](#scriptsuglifyerrorhandler-function)
+    * [`es6`](#scriptses6-boolean)
+    * [`babelOptions`](#scriptsbabeloptions-object)
+    * [`esModules`](#scriptsesmodules-boolean)
+    * [`webpackOptions`](#scriptswebpackoptions-object)
     * [`ESLintOptions`](#scriptseslintoptions-object)
   + [Server](#server)
     * [`browserSyncOptions`](#serverbrowsersyncoptions-object)
@@ -219,15 +222,58 @@ Options for the [`gulp-uglify`](https://github.com/terinjokes/gulp-uglify/#optio
 }
 ```
 
-#### `scripts.uglifyErrorHandler` _(Function)_
+#### `scripts.es6` _(Boolean)_
 
-Handler for the `error` event of the `gulp-uglify` plugin.
+Enable/Disable es6 scripts compilation.
 
 ```js
 {
-  uglifyErrorHandler: ({ message }) => {
-    console.log(message);
-    notify.onError({ message });
+  es6: false,
+}
+```
+
+#### `scripts.babelOptions` _(Object)_
+
+Options for the [`gulp-babel`](https://github.com/babel/gulp-babel) plugin.
+
+```js
+{
+  babelOptions: {
+    presets: [ '@babel/preset-env' ],
+  },
+}
+```
+
+#### `scripts.esModules` _(Boolean)_
+
+Enable/Disable es6 modules resolution with [Webpack](https://webpack.js.org/).
+
+```js
+{
+  esModules: false,
+}
+```
+
+#### `scripts.webpackOptions` _(Object)_
+
+Options for the [`webpack-stream`](https://github.com/shama/webpack-stream) plugin.
+
+```js
+{
+  webpackOptions: {
+    mode: 'production',
+    devtool: false,
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          use: {
+            loader: 'babel-loader',
+          },
+        },
+      ],
+    },
   },
 }
 ```

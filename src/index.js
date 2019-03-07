@@ -78,7 +78,7 @@ export const create = (options) => {
     buildTasksNames.push(builderName);
     lintTasksNames.push(linterName);
 
-    // Add scripts watchers
+    // Trigger build and lint on source files when they change
     watchers.push({
       files: [ builderOptions.glob ],
       options: {
@@ -88,6 +88,14 @@ export const create = (options) => {
         builderName,
         linterName,
       ],
+    });
+
+    // Trigger browser reload when any dist files changes
+    watchers.push({
+      files: [ builderOptions.glob ],
+      options: {
+        cwd: builderOptions.dist,
+      },
       callbacks: [
         {
           event: 'change',

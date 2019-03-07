@@ -7,6 +7,11 @@ const optionsDefintions = [
     alias: 'd',
     type: Boolean,
   },
+  {
+    name: 'es6',
+    alias: 'e',
+    type: Boolean,
+  },
 ];
 
 // Export the parsed command line options
