@@ -83,6 +83,11 @@ All the [defaults Gulp CLI flags](https://github.com/gulpjs/gulp-cli#flags) can 
       <td>-d</td>
       <td>Execute the given task only on files listed in your `git diff`.</td>
     </tr>
+    <tr>
+      <td>--quiet</td>
+      <td>-q</td>
+      <td>Disable most of the system notifications to improve performance.</td>
+    </tr>
   </tbody>
 </table>
 
