@@ -17,33 +17,64 @@ function fileHasChanged(file, changedFiles) {
 }
 
 /**
+ * Get a list of file from executing a git command
+ * @param  {String} cmd The command to execute
+ * @return {Array}      A list of file paths
+ */
+function getFilesFromGitCommand(cmd) {
+  return execSync(cmd, { encoding: 'utf8' })
+    .split('\n')
+    .filter(file => file.length > 0);
+}
+
+/**
  * Filter file by their diff status
  * @return {Vinyl}
  */
 export default function diff(isDiffOnly = false) {
-  const cmd = 'git diff --name-only';
-  const changedFiles = execSync(cmd, { encoding: 'utf8' })
-    .split('\n')
-    .filter(file => file.length > 0);
+  const changedFiles = getFilesFromGitCommand('git diff --name-only');
+  const newFiles = getFilesFromGitCommand(
+    'git ls-files --others --exclude-standard'
+  );
 
-  const formattedChangedFiles = changedFiles.map(file => `modified:   ${file}`)
+  const formattedChangedFiles = changedFiles
+    .map(file => `modified:   ${file}`)
+    .join('\n    ');
+  const formattedNewFiles = newFiles
+    .map(file => `added:      ${file}`)
     .join('\n    ');
 
   if (isDiffOnly) {
-    if (changedFiles.length > 0) {
-      log(`
+    if (changedFiles.length > 0 || newFiles.length > 0) {
+      console.log('');
+      console.log(
+        `    The '${colors.green(
+          '--diff-only'
+        )}' option is enabled, the task will only`
+      );
+      console.log('    process the following matching modified files:');
+      console.log('');
 
-    The '${colors.green('--diff-only')}' option is enabled, the task will only
-    process the following matching modified files:
+      if (changedFiles.length > 0) {
+        console.log(`    ${colors.red(formattedChangedFiles)}`);
+      }
 
-    ${colors.red(formattedChangedFiles)}
-      `);
+      if (newFiles.length > 0) {
+        console.log(`    ${colors.red(formattedNewFiles)}`);
+      }
+
+      console.log('');
     } else {
-      log(`
-
-    The '${colors.green('--diff-only')}' option is enabled, but you do not have
-    any modified files in your repository, nothing will happen.
-      `);
+      console.log('');
+      console.log(
+        `    The '${colors.green(
+          '--diff-only'
+        )}' option is enabled, but you do not have`
+      );
+      console.log(
+        '    any modified files in your repository, nothing will happen.'
+      );
+      console.log('');
     }
   }
 
@@ -61,7 +92,7 @@ export default function diff(isDiffOnly = false) {
         return;
       }
 
-      const hasChanged = fileHasChanged(file, changedFiles);
+      const hasChanged = fileHasChanged(file, [...changedFiles, ...newFiles]);
 
       try {
         if ((isDiffOnly && hasChanged) || !isDiffOnly) {
