@@ -8,9 +8,10 @@ const optionsDefintions = [
     type: Boolean,
   },
   {
-    name: 'es6',
-    alias: 'e',
+    name: 'quiet',
+    alias: 'q',
     type: Boolean,
+    defaultOption: false,
   },
 ];
 
