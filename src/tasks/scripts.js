@@ -7,6 +7,8 @@ import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
 import errorHandler from '../utils/error-handler';
+import diff from '../plugins/gulp-diff';
+import args from '../utils/arguments';
 
 /**
  * Create the `scripts-build` Gulp task
@@ -44,6 +46,7 @@ export const createScriptsBuilder = (options) => {
     name,
     () => (
       source(resolve(src, glob))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(sourcemaps.init())
         .pipe(uglify(uglifyOptions).on('error', errorHandler))
@@ -97,6 +100,7 @@ export const createScriptsLinter = (options) => {
     name,
     () => (
       source(resolve(src, glob))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
         .pipe(eslint.format())
@@ -140,6 +144,7 @@ export const createScriptsFormatter = (options) => {
     name,
     () => (
       source(resolve(src, glob))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
         .pipe(dest(src))
