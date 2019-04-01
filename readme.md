@@ -3,19 +3,24 @@
 A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files.^
 
 - [Usage](#usage)
-- [Options](#options)
+  + [CLI options](#cli-options)
+- [Configuration](#configuration)
   + [Styles](#styles)
     * [`src`](#stylessrc-string)
     * [`glob`](#stylesglob-string)
     * [`dist`](#stylesdist-string)
     * [`postCssPlugins`](#stylespostcssplugins-array)
+    * [`cleanCssOptions`](#stylescleancssoptions-object)
     * [`styleLintOptions`](#stylesstylelintoptions-object)
   + [Scripts](#scripts)
     * [`src`](#scriptssrc-string)
     * [`glob`](#scriptsglob-string)
     * [`dist`](##scriptsdist-string)
     * [`uglifyOptions`](#scriptsuglifyoptions-object)
-    * [`uglifyErrorHandler`](#scriptsuglifyerrorhandler-function)
+    * [`es6`](#scriptses6-boolean)
+    * [`babelOptions`](#scriptsbabeloptions-object)
+    * [`esModules`](#scriptsesmodules-boolean)
+    * [`webpackOptions`](#scriptswebpackoptions-object)
     * [`ESLintOptions`](#scriptseslintoptions-object)
   + [Server](#server)
     * [`browserSyncOptions`](#serverbrowsersyncoptions-object)
@@ -63,7 +68,33 @@ The `gulp` default tasks will execute the build and lint tasks before the server
 
 The server tasks watch automatically for changes in the styles and scripts files to re-trigger the build and lint tasks.
 
-## Options
+### CLI options
+
+All the [defaults Gulp CLI flags](https://github.com/gulpjs/gulp-cli#flags) can be used when running a task, with the following custom ones:
+
+<table>
+  <thead>
+    <tr>
+      <th width="25%">Flag</th>
+      <th width="15%">Short Flag</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>--diff-only</td>
+      <td>-d</td>
+      <td>Execute the given task only on files listed in your `git diff`.</td>
+    </tr>
+    <tr>
+      <td>--quiet</td>
+      <td>-q</td>
+      <td>Disable most of the system notifications to improve performance.</td>
+    </tr>
+  </tbody>
+</table>
+
+## Configuration
 
 The main options object can contain 3 different keys : [`styles`](#styles), [`scripts`](#scripts) and [`server`](#server). If one of them is omitted, the corresponding tasks won't be created. Find below the description and default values for each configuration object.
 
@@ -196,15 +227,58 @@ Options for the [`gulp-uglify`](https://github.com/terinjokes/gulp-uglify/#optio
 }
 ```
 
-#### `scripts.uglifyErrorHandler` _(Function)_
+#### `scripts.es6` _(Boolean)_
 
-Handler for the `error` event of the `gulp-uglify` plugin.
+Enable/Disable es6 scripts compilation.
 
 ```js
 {
-  uglifyErrorHandler: ({ message }) => {
-    console.log(message);
-    notify.onError({ message });
+  es6: false,
+}
+```
+
+#### `scripts.babelOptions` _(Object)_
+
+Options for the [`gulp-babel`](https://github.com/babel/gulp-babel) plugin.
+
+```js
+{
+  babelOptions: {
+    presets: [ '@babel/preset-env' ],
+  },
+}
+```
+
+#### `scripts.esModules` _(Boolean)_
+
+Enable/Disable es6 modules resolution with [Webpack](https://webpack.js.org/).
+
+```js
+{
+  esModules: false,
+}
+```
+
+#### `scripts.webpackOptions` _(Object)_
+
+Options for the [`webpack-stream`](https://github.com/shama/webpack-stream) plugin.
+
+```js
+{
+  webpackOptions: {
+    mode: 'production',
+    devtool: false,
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          use: {
+            loader: 'babel-loader',
+          },
+        },
+      ],
+    },
   },
 }
 ```
@@ -238,8 +312,25 @@ Options for the [`browser-sync`]() plugin.
   },
 }
 ```
-
 > If your project is using a `.env` file, you can load it in your `gulpfile.js` file with the [`dotenv`](https://github.com/motdotla/dotenv) package and set a variable named `APP_HOST` to take advantage of the default browser-sync configuration. The server setup by browser-sync will then be proxied on the port 3000 of the host you defined, you will have live-reload enabled by accessing `http://APP_HOST:3000`.
+
+Example of configuration to enable browserSync with `https://`:
+
+```js
+{
+  browserSyncOptions: {
+    proxy: 'https://local.fqdn.com',
+    https: {
+      key: 'path/to/your/key.pem',
+      cert: '/path/to/your/cert.pem',
+    },
+  },
+}
+```
+> You can easliy create a valid certificate for your local domain `local.fqdn.com` with the help of [`mkcert`](https://github.com/FiloSottile/mkcert) and the following command: 
+> ```bash
+> mkcert local.fqdn.com fqdn.com localhost 127.0.0.1
+> ```
 
 #### `server.watchers` _(Array)_
 

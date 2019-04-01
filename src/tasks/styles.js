@@ -13,7 +13,11 @@ import styleLint from 'gulp-stylelint';
 import sassInheritance from 'gulp-sass-multi-inheritance';
 import cache from 'gulp-cached';
 import filter from 'gulp-filter';
+import gif from 'gulp-if';
 import magicImporter from 'node-sass-magic-importer';
+import errorHandler from '../utils/error-handler';
+import args from '../utils/arguments';
+import diff from '../plugins/gulp-diff';
 
 /**
  * Create the styles compilation task
@@ -22,7 +26,7 @@ import magicImporter from 'node-sass-magic-importer';
  *                          possibilities
  * @return {Array}          Array of the name and function of the task
  */
-export const createStylesBuilder = (options) => {
+export const createStylesBuilder = options => {
   /** @type {String} The task's name */
   const name = 'styles-build';
 
@@ -31,9 +35,7 @@ export const createStylesBuilder = (options) => {
     src: 'src/styles',
     glob: '**/*.scss',
     dist: 'dist/styles',
-    postCssPlugins: [
-      autoprefixer(),
-    ],
+    postCssPlugins: [autoprefixer()],
     cleanCssOptions: {
       level: 1,
     },
@@ -46,9 +48,9 @@ export const createStylesBuilder = (options) => {
 
   // Merge defaults PostCSS plugins with the custom ones
   if ('postCssPlugins' in options && isArray(options.postCssPlugins)) {
-    defaults.postCssPlugins.forEach(plugin => (
+    defaults.postCssPlugins.forEach(plugin =>
       options.postCssPlugins.push(plugin)
-    ));
+    );
   }
 
   // Merge custom options with default options
@@ -63,27 +65,31 @@ export const createStylesBuilder = (options) => {
 
   return [
     name,
-    () => (
+    () =>
       source(resolve(src, glob))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(sassInheritance({ dir: src }))
-        .pipe(filter(file => (
-          !/\/_/.test(file.path) || !/^_/.test(file.relative)
-        )))
+        .pipe(
+          filter(file => !/\/_/.test(file.path) || !/^_/.test(file.relative))
+        )
         .pipe(sourcemaps.init())
-        .pipe(sass.sync(gulpSassOptions).on('error', sass.logError))
+        .pipe(sass.sync(gulpSassOptions).on('error', errorHandler))
         .pipe(postcss(postCssPlugins))
         .pipe(cleanCss(cleanCssOptions))
         .pipe(sourcemaps.write('map'))
         .pipe(dest(dist))
         .pipe(browserSync.stream())
-        .pipe(notify({
-          title: `gulp ${name}`,
-          message: ({ relative }) => (
-            `The file ${relative} has been updated.`
-          ),
-        }))
-    ),
+        .pipe(
+          gif(
+            !args.quiet,
+            notify({
+              title: `gulp ${name}`,
+              message: ({ relative }) =>
+                `The file ${relative} has been updated.`,
+            })
+          )
+        ),
     {
       src,
       glob,
@@ -95,7 +101,6 @@ export const createStylesBuilder = (options) => {
   ];
 };
 
-
 /**
  * Create the style linter task
  *
@@ -103,7 +108,7 @@ export const createStylesBuilder = (options) => {
  *                          for all available possibilities
  * @return {Array}          Array of the name and function of the task
  */
-export const createStylesLinter = (options) => {
+export const createStylesLinter = options => {
   /** @type {String} The task's name */
   const name = 'styles-lint';
 
@@ -123,25 +128,20 @@ export const createStylesLinter = (options) => {
   };
 
   // Merge custom and default options
-  const {
-    src,
-    glob,
-    styleLintOptions,
-  } = merge({}, defaults, options);
+  const { src, glob, styleLintOptions } = merge({}, defaults, options);
 
   // Make sure the `failAfterError` options is always false
   styleLintOptions.failAfterError = false;
 
   return [
     name,
-    () => (
+    () =>
       source(resolve(src, glob))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
-        .pipe(styleLint(styleLintOptions))
-    ),
+        .pipe(styleLint(styleLintOptions)),
   ];
 };
-
 
 /**
  * Create the style formatter task
@@ -150,7 +150,7 @@ export const createStylesLinter = (options) => {
  *                          for all available possibilities
  * @return {Array}          Array of the name and function of the task
  */
-export const createStylesFormatter = (options) => {
+export const createStylesFormatter = options => {
   /** @type {String} The task's name */
   const name = 'styles-format';
 
@@ -171,11 +171,7 @@ export const createStylesFormatter = (options) => {
   };
 
   // Merge custom and default options
-  const {
-    src,
-    glob,
-    styleLintOptions,
-  } = merge({}, defaults, options);
+  const { src, glob, styleLintOptions } = merge({}, defaults, options);
 
   // Make sure the `failAfterError` options is always false
   styleLintOptions.failAfterError = false;
@@ -185,17 +181,21 @@ export const createStylesFormatter = (options) => {
 
   return [
     name,
-    () => (
+    () =>
       source(resolve(src, glob))
+        .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
         .pipe(dest(src))
-        .pipe(notify({
-          title: `gulp ${name}`,
-          message: ({ relative }) => (
-            `The file ${relative} has been formatted with StyleLint.`
-          ),
-        }))
-    ),
+        .pipe(
+          gif(
+            !args.quiet,
+            notify({
+              title: `gulp ${name}`,
+              message: ({ relative }) =>
+                `The file ${relative} has been formatted with StyleLint.`,
+            })
+          )
+        ),
   ];
 };
