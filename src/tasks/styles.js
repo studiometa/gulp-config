@@ -1,7 +1,7 @@
 import { src as source, dest } from 'gulp';
 import { resolve } from 'path';
 import isArray from 'lodash/isArray';
-import sass from 'gulp-sass';
+import sass from 'gulp-dart-sass';
 import cleanCss from 'gulp-clean-css';
 import browserSync from 'browser-sync';
 import notify from 'gulp-notify';
