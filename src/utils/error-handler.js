@@ -1,5 +1,6 @@
 import PrettyError from 'pretty-error';
 import notifier from 'node-notifier';
+import args from './arguments';
 
 const prettyError = new PrettyError();
 prettyError.skipNodeFiles();
@@ -42,10 +43,13 @@ const formatError = error =>
 export default function errorHandler(error) {
   const formatted = formatError(error);
   prettyError.render(formatted, true);
-  notifier.notify({
-    title: 'Error',
-    message: formatted.message,
-  });
+
+  if (!args.quiet) {
+    notifier.notify({
+      title: 'Error',
+      message: formatted.message,
+    });
+  }
 
   return this ? this.emit('end') : null;
 }
