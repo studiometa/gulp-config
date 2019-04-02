@@ -10,7 +10,6 @@ import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
 import merge from 'lodash/merge';
 import styleLint from 'gulp-stylelint';
-import sassInheritance from 'gulp-sass-multi-inheritance';
 import cache from 'gulp-cached';
 import filter from 'gulp-filter';
 import gif from 'gulp-if';
@@ -18,6 +17,7 @@ import magicImporter from 'node-sass-magic-importer';
 import errorHandler from '../utils/error-handler';
 import args from '../utils/arguments';
 import diff from '../plugins/gulp-diff';
+import sassInheritance from '../plugins/gulp-sass-inheritance';
 
 /**
  * Create the styles compilation task
