@@ -3913,6 +3913,20 @@ gulp-cli@^2.0.0, gulp-cli@^2.0.1:
     v8flags "^3.0.1"
     yargs "^7.1.0"
 
+gulp-dart-sass@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/gulp-dart-sass/-/gulp-dart-sass-0.9.1.tgz#6243d12744759e17568bf06183b4aa1a16a74432"
+  integrity sha512-6gmKmzDwSzjrN1nIC7K0URpX3fG5jMXxbpBLF42GFhnuM5+9Is7D9W55K+9A0MnFeqKyZGIzof4a9GDpB8wJgQ==
+  dependencies:
+    chalk "^2.3.0"
+    lodash.clonedeep "^4.3.2"
+    plugin-error "^1.0.1"
+    replace-ext "^1.0.0"
+    sass "^1.10.3"
+    strip-ansi "^4.0.0"
+    through2 "^2.0.0"
+    vinyl-sourcemaps-apply "^0.2.0"
+
 gulp-eslint@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/gulp-eslint/-/gulp-eslint-5.0.0.tgz#2a2684095f774b2cf79310262078c56cc7a12b52"
@@ -7400,6 +7414,13 @@ sass-graph@~2.1.1:
     glob "^7.0.0"
     lodash "^4.0.0"
     yargs "^4.7.1"
+
+sass@^1.10.3:
+  version "1.17.3"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.17.3.tgz#19f9164cf8653b9fca670a64e53285272c96d192"
+  integrity sha512-S4vJawbrNUxJUBiHLXPYUKZCoO6cvq3/3ZFBV66a+PafTxcDEFJB+FHLDFl0P+rUfha/703ajEXMuGTYhJESkQ==
+  dependencies:
+    chokidar "^2.0.0"
 
 sax@^1.2.4:
   version "1.2.4"
