@@ -1,4 +1,3 @@
-import log from 'fancy-log';
 import through from 'through2';
 import PluginError from 'plugin-error';
 import { execSync } from 'child_process';
