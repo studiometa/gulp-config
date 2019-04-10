@@ -63,6 +63,9 @@ export const createStylesBuilder = options => {
     gulpSassOptions,
   } = merge({}, defaults, options);
 
+  const srcAbsolute = resolve(src);
+  const distAbsolute = resolve(dist);
+
   return [
     name,
     () =>
@@ -77,8 +80,8 @@ export const createStylesBuilder = options => {
         .pipe(sass.sync(gulpSassOptions).on('error', errorHandler))
         .pipe(postcss(postCssPlugins))
         .pipe(cleanCss(cleanCssOptions))
-        .pipe(sourcemaps.write('map'))
-        .pipe(dest(dist))
+        .pipe(sourcemaps.write('maps'))
+        .pipe(dest(file => file.base.replace(srcAbsolute, distAbsolute)))
         .pipe(browserSync.stream())
         .pipe(
           gif(
