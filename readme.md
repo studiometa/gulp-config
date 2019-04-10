@@ -1,6 +1,13 @@
 # Gulp Configuration
 
-A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files.^
+[![NPM Version](https://img.shields.io/npm/v/@studiometa/gulp-config.svg?style=flat-square)](https://www.npmjs.com/package/@studiometa/gulp-config)
+[![NPM Beta Version](https://img.shields.io/npm/v/@studiometa/gulp-config/beta.svg?style=flat-square)](https://www.npmjs.com/package/@studiometa/gulp-config/v/beta)
+[![Dependency Status](https://img.shields.io/david/studiometa/gulp-config.svg?label=deps&style=flat-square)](https://david-dm.org/studiometa/gulp-config)
+[![devDependency Status](https://img.shields.io/david/dev/studiometa/gulp-config.svg?label=devDeps&style=flat-square)](https://david-dm.org/studiometa/gulp-config?type=dev)
+
+> A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files! 🔧
+
+## Table of contents
 
 - [Usage](#usage)
   + [CLI options](#cli-options)
@@ -28,11 +35,14 @@ A small helper to simplify the usage of Gulp to compile, lint, fix, compress and
 
 ## Usage
 
-Install the package with your favorite package manager:
+Install the package with your Yarn:
 
 ```bash
 yarn add --dev @studiometa/gulp-config
-# or 
+```
+Or with NPM:
+
+```bash
 npm install --save-dev @studiometa/gulp-config
 ```
 
