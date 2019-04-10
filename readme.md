@@ -5,7 +5,7 @@
 [![Dependency Status](https://img.shields.io/david/studiometa/gulp-config.svg?label=deps&style=flat-square)](https://david-dm.org/studiometa/gulp-config)
 [![devDependency Status](https://img.shields.io/david/dev/studiometa/gulp-config.svg?label=devDeps&style=flat-square)](https://david-dm.org/studiometa/gulp-config?type=dev)
 
-> A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files! 🔧
+> Simplify your Gulp configuration to compile, lint, fix, compress and live-reload SCSS and JS files.
 
 ## Table of contents
 
@@ -32,6 +32,7 @@
   + [Server](#server)
     * [`browserSyncOptions`](#serverbrowsersyncoptions-object)
     * [`watchers`](#serverwatchers-array)
+- [Contributing](#contributing)
 
 ## Usage
 
@@ -370,4 +371,4 @@ See the [Gulp documentation](https://gulpjs.com/docs/en/api/watch) on the `watch
 
 ## Contributing
 
-See the "[Features](https://github.com/studiometa/gulp-config/projects/2)" project for a list of things to do. This project's branches are managed with [Git Flow](https://github.com/petervanderdoes/gitflow-avh) , every feature branch must be merged into develop via a pull request.
+This project's branches are managed with [Git Flow](https://github.com/petervanderdoes/gitflow-avh), every feature branch must be merged into develop via a pull request.
