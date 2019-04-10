@@ -1,6 +1,6 @@
 {
   "name": "@studiometa/gulp-config",
-  "version": "1.3.0-beta.2",
+  "version": "1.3.0",
   "description": "Gulp configuration",
   "main": "dist/index.js",
   "scripts": {
