@@ -1,0 +1,22 @@
+$has-classes: false;
+@import 'config';
+
+@mixin for-each-breakpoints() {
+  @each $breakpoint in $breakpoints {
+    $key: nth($breakpoint, 1);
+
+    @media #{md($key)} {
+      @content ($key);
+    }
+  }
+}
+
+.foo {
+  display: block;
+
+  @include for-each-breakpoints using ($key) {
+    &--#{$key} {
+      display: block;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { src as source, dest } from 'gulp';
 import { resolve } from 'path';
 import isArray from 'lodash/isArray';
-import sass from 'gulp-sass';
+import sass from 'gulp-dart-sass';
 import cleanCss from 'gulp-clean-css';
 import browserSync from 'browser-sync';
 import notify from 'gulp-notify';
@@ -63,6 +63,9 @@ export const createStylesBuilder = options => {
     gulpSassOptions,
   } = merge({}, defaults, options);
 
+  const srcAbsolute = resolve(src);
+  const distAbsolute = resolve(dist);
+
   return [
     name,
     () =>
@@ -77,8 +80,8 @@ export const createStylesBuilder = options => {
         .pipe(sass.sync(gulpSassOptions).on('error', errorHandler))
         .pipe(postcss(postCssPlugins))
         .pipe(cleanCss(cleanCssOptions))
-        .pipe(sourcemaps.write('map'))
-        .pipe(dest(dist))
+        .pipe(sourcemaps.write('maps'))
+        .pipe(dest(file => file.base.replace(srcAbsolute, distAbsolute)))
         .pipe(browserSync.stream())
         .pipe(
           gif(

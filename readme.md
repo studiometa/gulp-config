@@ -1,6 +1,13 @@
 # Gulp Configuration
 
-A small helper to simplify the usage of Gulp to compile, lint, fix, compress and live-reload SCSS and JS files.^
+[![NPM Version](https://img.shields.io/npm/v/@studiometa/gulp-config.svg?style=flat-square)](https://www.npmjs.com/package/@studiometa/gulp-config)
+[![NPM Beta Version](https://img.shields.io/npm/v/@studiometa/gulp-config/beta.svg?style=flat-square)](https://www.npmjs.com/package/@studiometa/gulp-config/v/beta)
+[![Dependency Status](https://img.shields.io/david/studiometa/gulp-config.svg?label=deps&style=flat-square)](https://david-dm.org/studiometa/gulp-config)
+[![devDependency Status](https://img.shields.io/david/dev/studiometa/gulp-config.svg?label=devDeps&style=flat-square)](https://david-dm.org/studiometa/gulp-config?type=dev)
+
+> Simplify your Gulp configuration to compile, lint, fix, compress and live-reload SCSS and JS files.
+
+## Table of contents
 
 - [Usage](#usage)
   + [CLI options](#cli-options)
@@ -25,14 +32,18 @@ A small helper to simplify the usage of Gulp to compile, lint, fix, compress and
   + [Server](#server)
     * [`browserSyncOptions`](#serverbrowsersyncoptions-object)
     * [`watchers`](#serverwatchers-array)
+- [Contributing](#contributing)
 
 ## Usage
 
-Install the package with your favorite package manager:
+Install the package with your Yarn:
 
 ```bash
 yarn add --dev @studiometa/gulp-config
-# or 
+```
+Or with NPM:
+
+```bash
 npm install --save-dev @studiometa/gulp-config
 ```
 
@@ -360,4 +371,4 @@ See the [Gulp documentation](https://gulpjs.com/docs/en/api/watch) on the `watch
 
 ## Contributing
 
-See the "[Features](https://github.com/studiometa/gulp-config/projects/2)" project for a list of things to do. This project's branches are managed with [Git Flow](https://github.com/petervanderdoes/gitflow-avh) , every feature branch must be merged into develop via a pull request.
+This project's branches are managed with [Git Flow](https://github.com/petervanderdoes/gitflow-avh), every feature branch must be merged into develop via a pull request.
