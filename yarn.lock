@@ -666,10 +666,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@studiometa/eslint-config@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@studiometa/eslint-config/-/eslint-config-1.1.2.tgz#0cf01c93c89d3f58506802db1a760caedc9a5ed6"
-  integrity sha512-TotRI/MGbgESKTWifEyLPHbU9noGTFGXW+qfcy3845eRcAGlGRQ2KXfCZzNWl9JPelKcOcdk/8CCJgRILssK0Q==
+"@studiometa/eslint-config@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@studiometa/eslint-config/-/eslint-config-1.1.3.tgz#eb68d6ce35226951f340a6ef7f76a13b885fe97b"
+  integrity sha512-cA7+ExXZCleFCAkDFRoZEP3PoeIa9hD4KFhdxfIK4qa1lQreyezfKDE62teWnmmAxCyhEiX27mfk9QgUVysXQQ==
   dependencies:
     eslint "^5.9.0"
     eslint-config-airbnb-base "^13.1.0"
@@ -711,6 +711,13 @@
     stylelint "^9.10.0"
     through2 "^3.0.0"
 
+"@studiometa/prettier-config@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@studiometa/prettier-config/-/prettier-config-1.0.0.tgz#4522b43b14e897b83d5867b7d1f781e39676b4c8"
+  integrity sha512-rpXJ78QZmGomYr3OgYvWrh7xmrxdHrBAEle1sRdcgDHh+sBeAo6C3F8DPJ8fcNAmfgMtJUhgrqT6HEJccpAGMA==
+  dependencies:
+    prettier "^1.16.4"
+
 "@studiometa/scss-toolkit@^1.0.5":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@studiometa/scss-toolkit/-/scss-toolkit-1.1.0.tgz#b613f1bf7bd3c778c4548c25ae935571cf037b2d"
@@ -719,10 +726,10 @@
     "@studiometa/gulp-config" "^1.1.5-beta.1"
     reset-css "^4.0.1"
 
-"@studiometa/stylelint-config@^1.0.1":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@studiometa/stylelint-config/-/stylelint-config-1.0.2.tgz#0611446b2e781d21cd008181e198ff4717a79b50"
-  integrity sha512-/bVD3IRmy4cFBcEB6+Oo5ad4MZH2RotQjJb41A/Ta1qIPDv7anRrENW0K9ULUQ0rnak1ovsh8GHT4oxv3uGOPA==
+"@studiometa/stylelint-config@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@studiometa/stylelint-config/-/stylelint-config-1.0.3.tgz#a5f35fdfc6c4006b3b9a114f4b637e7ae92b81c7"
+  integrity sha512-LICELOk8cuwUVdohrhXTiikSB7IRmP++Ylf3T6WgKjgnOc3PwKWoy12yVDwP1bncpKhR6CAodbZOUBksuNPE8w==
   dependencies:
     prettier "^1.15.2"
     stylelint "^9.8.0"
@@ -6709,7 +6716,7 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^1.15.2:
+prettier@^1.15.2, prettier@^1.16.4:
   version "1.16.4"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.16.4.tgz#73e37e73e018ad2db9c76742e2647e21790c9717"
   integrity sha512-ZzWuos7TI5CKUeQAtFd6Zhm2s6EpAD/ZLApIhsF9pRvRtM1RFo61dM/4MSRUA0SuLugA/zgrZD8m0BaY46Og7g==
