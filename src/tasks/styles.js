@@ -134,7 +134,7 @@ export const createStylesLinter = options => {
   const { src, glob, styleLintOptions } = merge({}, defaults, options);
 
   // Make sure the `failAfterError` options is always false
-  styleLintOptions.failAfterError = false;
+  styleLintOptions.failAfterError = args.failAfterError;
 
   return [
     name,

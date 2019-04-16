@@ -141,7 +141,8 @@ export const createScriptsLinter = options => {
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
-        .pipe(eslint.format()),
+        .pipe(eslint.format())
+        .pipe(gif(args.failAfterError, eslint.failAfterError())),
   ];
 };
 

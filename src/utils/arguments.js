@@ -13,6 +13,11 @@ const optionsDefintions = [
     type: Boolean,
     defaultOption: false,
   },
+  {
+    name: 'fail-after-error',
+    type: Boolean,
+    defaultValue: false,
+  },
 ];
 
 // Export the parsed command line options
