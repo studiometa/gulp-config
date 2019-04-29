@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import merge from 'lodash/merge';
 import eslint from 'gulp-eslint';
 import sourcemaps from 'gulp-sourcemaps';
-import uglify from 'gulp-uglify';
+import gulpUglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import cache from 'gulp-cached';
 import babel from 'gulp-babel';
@@ -30,6 +30,7 @@ export const createScriptsBuilder = options => {
     src: 'src/scripts',
     glob: '**/*.js',
     dist: 'src/scripts',
+    uglify: true,
     uglifyOptions: {
       compress: {
         /* eslint-disable-next-line */
@@ -63,6 +64,7 @@ export const createScriptsBuilder = options => {
     src,
     glob,
     dist,
+    uglify,
     uglifyOptions,
     es6,
     babelOptions,
@@ -89,7 +91,7 @@ export const createScriptsBuilder = options => {
         )
         .pipe(sourcemaps.init())
         .pipe(gif(es6 && !esModules, babel(babelOptions)))
-        .pipe(uglify(uglifyOptions).on('error', errorHandler))
+        .pipe(gif(uglify, gulpUglify(uglifyOptions).on('error', errorHandler)))
         .pipe(sourcemaps.write('maps'))
         .pipe(dest(dist))
         .pipe(

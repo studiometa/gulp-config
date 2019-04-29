@@ -22,7 +22,8 @@
   + [Scripts](#scripts)
     * [`src`](#scriptssrc-string)
     * [`glob`](#scriptsglob-string)
-    * [`dist`](##scriptsdist-string)
+    * [`dist`](#scriptsdist-string)
+    * [`uglify`](#scriptsuglify-boolean)
     * [`uglifyOptions`](#scriptsuglifyoptions-object)
     * [`es6`](#scriptses6-boolean)
     * [`babelOptions`](#scriptsbabeloptions-object)
@@ -230,6 +231,16 @@ The path where the uglified and/or compiled JS files are saved.
 ```js
 {
   dist: 'dist/scripts',
+}
+```
+
+#### `scripts.uglify` _(Boolean)_
+
+Whether to run or not [`gulp-uglify`](https://github.com/terinjokes/gulp-uglify/) on the Javascript files.
+
+```js
+{
+  uglify: true,
 }
 ```
 
