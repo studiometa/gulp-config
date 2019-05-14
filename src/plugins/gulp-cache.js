@@ -52,7 +52,7 @@ gulpCache.caches = {};
  *
  * @param  {String} name The name of the cache
  * @param  {String} key  The key of the object
- * @return {Vinyl}       The cached Vinyl file
+ * @return {Object}      The cached vinyl file and its hash
  */
 function getObject(name, key) {
   if (!gulpCache.caches[name]) {
@@ -63,7 +63,13 @@ function getObject(name, key) {
     throw new Error(`No existigin key for "${key}" in the cache "${name}".`);
   }
 
-  return gulpCache.caches[name][key];
+  const { hash, file: cachedFile } = gulpCache.caches[name][key];
+
+  // Always return a clone of the cached file to
+  // keep it pure and avoid side effects
+  const file = cachedFile.clone();
+
+  return { hash, file };
 }
 gulpCache.getObject = getObject;
 
