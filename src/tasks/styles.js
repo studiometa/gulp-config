@@ -1,5 +1,5 @@
 import { src as source, dest } from 'gulp';
-import { resolve } from 'path';
+import { resolve, basename } from 'path';
 import isArray from 'lodash/isArray';
 import sass from 'gulp-dart-sass';
 import cleanCss from 'gulp-clean-css';
@@ -10,12 +10,12 @@ import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
 import merge from 'lodash/merge';
 import styleLint from 'gulp-stylelint';
-import cache from 'gulp-cached';
 import filter from 'gulp-filter';
 import gif from 'gulp-if';
 import magicImporter from 'node-sass-magic-importer';
 import errorHandler from '../utils/error-handler';
 import args from '../utils/arguments';
+import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
 import sassInheritance from '../plugins/gulp-sass-inheritance';
 
@@ -72,10 +72,8 @@ export const createStylesBuilder = options => {
       source(resolve(src, glob))
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
-        .pipe(sassInheritance({ dir: src }))
-        .pipe(
-          filter(file => !/\/_/.test(file.path) || !/^_/.test(file.relative))
-        )
+        .pipe(sassInheritance({ dir: src, cache: name }))
+        .pipe(filter(file => !basename(file.path).startsWith('_')))
         .pipe(sourcemaps.init())
         .pipe(sass.sync(gulpSassOptions).on('error', errorHandler))
         .pipe(postcss(postCssPlugins))
