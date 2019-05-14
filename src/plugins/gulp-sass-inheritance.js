@@ -7,23 +7,22 @@ import PluginError from 'plugin-error';
 /**
  * Get the files paths which imports the given file
  *
- * @param  {Object} graph A sass-graph object
- * @param  {Vynil} file   The current file to test
- * @return {Array}        A list of files importing the given file
+ * @param  {Object} graph   A sass-graph object
+ * @param  {Vinyl}  file    The current file to test
+ * @param  {Array}  parents A list of existing parents to complete
+ * @return {Array}          A list of files importing the given file
  */
-function getFileParents(graph, file) {
-  const parents = [];
-  const { path } = file;
+function getFileParents(graph, filePath, parents = []) {
+  if (!(filePath in graph)) {
+    return parents;
+  }
 
-  Object.keys(graph).forEach(filePath => {
-    const { importedBy } = graph[filePath];
+  const { importedBy } = graph[filePath];
 
-    if (resolve(path) === resolve(filePath)) {
-      parents.push(...importedBy);
-    }
-  });
-
-  return parents;
+  return importedBy.reduce((acc, path) => {
+    const reducedPaths = getFileParents(graph, path, []);
+    return [path, ...reducedPaths, ...acc];
+  }, parents);
 }
 
 /**
@@ -60,7 +59,7 @@ export default function gulpSassInheritance(options = {}) {
 
       files.forEach(file => {
         filePaths.add(file.path);
-        const parents = getFileParents(graph, file);
+        const parents = getFileParents(graph, file.path);
 
         if (options.debug) {
           console.log(file.path);
