@@ -1,29 +1,28 @@
 import es from 'event-stream';
 import sassGraph from 'sass-graph';
 import { resolve } from 'path';
-import vinylFs from 'vinyl-fs';
 import PluginError from 'plugin-error';
+import cache from './gulp-cache';
 
 /**
  * Get the files paths which imports the given file
  *
- * @param  {Object} graph A sass-graph object
- * @param  {Vynil} file   The current file to test
- * @return {Array}        A list of files importing the given file
+ * @param  {Object} graph   A sass-graph object
+ * @param  {Vinyl}  file    The current file to test
+ * @param  {Array}  parents A list of existing parents to complete
+ * @return {Array}          A list of files importing the given file
  */
-function getFileParents(graph, file) {
-  const parents = [];
-  const { path } = file;
+function getFileParents(graph, filePath, parents = []) {
+  if (!(filePath in graph)) {
+    return parents;
+  }
 
-  Object.keys(graph).forEach(filePath => {
-    const { importedBy } = graph[filePath];
+  const { importedBy } = graph[filePath];
 
-    if (resolve(path) === resolve(filePath)) {
-      parents.push(...importedBy);
-    }
-  });
-
-  return parents;
+  return importedBy.reduce((acc, path) => {
+    const reducedPaths = getFileParents(graph, path, []);
+    return [path, ...reducedPaths, ...acc];
+  }, parents);
 }
 
 /**
@@ -37,6 +36,13 @@ export default function gulpSassInheritance(options = {}) {
     throw new PluginError(
       'gulp-sass-inheritance',
       'You must specify the `dir` options.'
+    );
+  }
+
+  if (!options.cache) {
+    throw new PluginError(
+      'gulp-sass-inheritance',
+      'You must specify the `cache` options.'
     );
   }
 
@@ -56,33 +62,37 @@ export default function gulpSassInheritance(options = {}) {
         return this.emit('end');
       }
 
-      const filePaths = new Set();
-
+      const filesToEmit = {};
       files.forEach(file => {
-        filePaths.add(file.path);
-        const parents = getFileParents(graph, file);
+        // Get parents' paths
+        const parents = getFileParents(graph, file.path);
 
         if (options.debug) {
           console.log(file.path);
-          parents.forEach((parent, index) => {
-            const tree = index < parents.length - 1 ? '├─' : '└─';
-            console.log(`${tree} ${parent}`);
-          });
         }
-        parents.forEach(parent => filePaths.add(parent));
+
+        // Get cached Vinyl file for each parent and emit the file
+        parents.forEach((parentPath, index) => {
+          const { file: parentFile } = cache.getObject(
+            options.cache,
+            parentPath
+          );
+          filesToEmit[parentPath] = parentFile;
+
+          if (options.debug) {
+            const tree = index < parents.length - 1 ? '├─' : '└─';
+            console.log(`${tree} ${parentPath}`);
+          }
+        });
+
+        filesToEmit[file.path] = file;
       });
 
-      if (filePaths.length <= 0) {
-        return this.emit('end');
-      }
+      Object.keys(filesToEmit).forEach(path => {
+        this.emit('data', filesToEmit[path]);
+      });
 
-      vinylFs
-        .src([...filePaths], { cwd: dir })
-        .pipe(
-          es.through(file => this.emit('data', file), () => this.emit('end'))
-        );
-
-      return this;
+      return this.emit('end');
     }
   );
 }

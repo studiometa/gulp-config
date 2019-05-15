@@ -22,7 +22,8 @@
   + [Scripts](#scripts)
     * [`src`](#scriptssrc-string)
     * [`glob`](#scriptsglob-string)
-    * [`dist`](##scriptsdist-string)
+    * [`dist`](#scriptsdist-string)
+    * [`uglify`](#scriptsuglify-boolean)
     * [`uglifyOptions`](#scriptsuglifyoptions-object)
     * [`es6`](#scriptses6-boolean)
     * [`babelOptions`](#scriptsbabeloptions-object)
@@ -88,6 +89,7 @@ All the [defaults Gulp CLI flags](https://github.com/gulpjs/gulp-cli#flags) can 
     <tr>
       <th width="25%">Flag</th>
       <th width="15%">Short Flag</th>
+      <th width="15%">Type</th>
       <th>Description</th>
     </tr>
   </thead>
@@ -95,12 +97,20 @@ All the [defaults Gulp CLI flags](https://github.com/gulpjs/gulp-cli#flags) can 
     <tr>
       <td>--diff-only</td>
       <td>-d</td>
+      <td>Boolean</td>
       <td>Execute the given task only on files listed in your `git diff`.</td>
     </tr>
     <tr>
       <td>--quiet</td>
       <td>-q</td>
+      <td>Boolean</td>
       <td>Disable most of the system notifications to improve performance.</td>
+    </tr>
+    <tr>
+      <td>--fail-after-error</td>
+      <td></td>
+      <td>Boolean</td>
+      <td>Specific to the lint tasks, they will end with a non-zero error code if any error level warnings were raised.</td>
     </tr>
   </tbody>
 </table>
@@ -113,7 +123,7 @@ The main options object can contain 3 different keys : [`styles`](#styles), [`sc
 
 #### `styles.src` _(String)_
 
-The path to your SCSS files. 
+The path to your SCSS files.
 
 ```js
 {
@@ -146,7 +156,7 @@ A list of PostCSS plugins to use.
 
 ```js
 {
-  postCssPlugins: [ 
+  postCssPlugins: [
     autoprefixer(),
   ],
 }
@@ -157,9 +167,9 @@ A list of PostCSS plugins to use.
 Options for the [`gulp-clean-css`](https://github.com/scniro/gulp-clean-css#options) plugin.
 
 ```js
-{ 
+{
   cleanCssOptions: {
-    level: 1 
+    level: 1,
   },
 }
 ```
@@ -182,7 +192,7 @@ Options for the [`gulp-stylelint`](https://github.com/olegskl/gulp-stylelint#opt
 
 ```js
 {
-  failAfterError: false,
+  failAfterError: false, // forced to false, except if `--fail-after-error` is specified
   reporters: [
     {
       formatter: 'string',
@@ -221,6 +231,16 @@ The path where the uglified and/or compiled JS files are saved.
 ```js
 {
   dist: 'dist/scripts',
+}
+```
+
+#### `scripts.uglify` _(Boolean)_
+
+Whether to run or not [`gulp-uglify`](https://github.com/terinjokes/gulp-uglify/) on the Javascript files.
+
+```js
+{
+  uglify: true,
 }
 ```
 
@@ -312,7 +332,7 @@ You can simply enable the server task by setting the `server` key to `true` in y
 
 #### `server.browserSyncOptions` _(Object)_
 
-Options for the [`browser-sync`]() plugin. 
+Options for the [`browser-sync`]() plugin.
 
 ```js
 {
@@ -338,14 +358,14 @@ Example of configuration to enable browserSync with `https://`:
   },
 }
 ```
-> You can easliy create a valid certificate for your local domain `local.fqdn.com` with the help of [`mkcert`](https://github.com/FiloSottile/mkcert) and the following command: 
+> You can easliy create a valid certificate for your local domain `local.fqdn.com` with the help of [`mkcert`](https://github.com/FiloSottile/mkcert) and the following command:
 > ```bash
 > mkcert local.fqdn.com fqdn.com localhost 127.0.0.1
 > ```
 
 #### `server.watchers` _(Array)_
 
-A list of files you want to watch when the server is running. It allows you to execute custom tasks and callbacks when the given files or glob changes. By default, the build tasks (`styles-build` and `scripts-build`) and the lint tasks (`styles-lint` and `scripts-build`) are triggered when any of the files found in the `styles.src` and `scripts.src` paths changes. 
+A list of files you want to watch when the server is running. It allows you to execute custom tasks and callbacks when the given files or glob changes. By default, the build tasks (`styles-build` and `scripts-build`) and the lint tasks (`styles-lint` and `scripts-build`) are triggered when any of the files found in the `styles.src` and `scripts.src` paths changes.
 
 The following example will watch for changes in your HTML files and trigger a browser-sync reload and execute the `styles-build` task:
 
