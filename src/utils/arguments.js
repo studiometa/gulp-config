@@ -11,7 +11,12 @@ const optionsDefintions = [
     name: 'quiet',
     alias: 'q',
     type: Boolean,
-    defaultOption: false,
+    defaultValue: false,
+  },
+  {
+    name: 'fail-after-error',
+    type: Boolean,
+    defaultValue: false,
   },
 ];
 

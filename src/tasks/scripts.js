@@ -3,15 +3,16 @@ import { resolve } from 'path';
 import merge from 'lodash/merge';
 import eslint from 'gulp-eslint';
 import sourcemaps from 'gulp-sourcemaps';
-import uglify from 'gulp-uglify';
+import gulpUglify from 'gulp-uglify';
 import notify from 'gulp-notify';
-import cache from 'gulp-cached';
 import babel from 'gulp-babel';
 import gif from 'gulp-if';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
 import errorHandler from '../utils/error-handler';
+import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
+import noop from '../plugins/gulp-noop';
 import args from '../utils/arguments';
 
 /**
@@ -30,10 +31,11 @@ export const createScriptsBuilder = options => {
     src: 'src/scripts',
     glob: '**/*.js',
     dist: 'src/scripts',
+    uglify: true,
     uglifyOptions: {
       compress: {
         /* eslint-disable-next-line */
-        drop_console: true
+        drop_console: true,
       },
     },
     es6: false,
@@ -56,6 +58,26 @@ export const createScriptsBuilder = options => {
         ],
       },
     },
+    hooks: {
+      beforeDiff: noop,
+      afterDiff: noop,
+      beforeCache: noop,
+      afterCache: noop,
+      beforeEsModules: noop,
+      afterEsModules: noop,
+      beforeSourceMapsInit: noop,
+      afterSourceMapsInit: noop,
+      beforeBabel: noop,
+      afterBabel: noop,
+      beforeUglify: noop,
+      afterUglify: noop,
+      beforeSourceMapsWrite: noop,
+      afterSourceMapsWrite: noop,
+      beforeDest: noop,
+      afterDest: noop,
+      beforeNotify: noop,
+      afterNotify: noop,
+    },
   };
 
   /** @type {Object} Merge the defaults and custom options */
@@ -63,19 +85,26 @@ export const createScriptsBuilder = options => {
     src,
     glob,
     dist,
+    uglify,
     uglifyOptions,
     es6,
     babelOptions,
     esModules,
     webpackOptions,
+    hooks,
   } = merge({}, defaults, options);
 
   return [
     name,
     () =>
       source(resolve(src, glob))
+        .pipe(hooks.beforeDiff())
         .pipe(diff(args.diffOnly))
+        .pipe(hooks.afterDiff())
+        .pipe(hooks.beforeCache())
         .pipe(cache(name))
+        .pipe(hooks.afterCache())
+        .pipe(hooks.beforeEsModules())
         .pipe(
           gif(
             es6 && esModules,
@@ -87,11 +116,23 @@ export const createScriptsBuilder = options => {
             })
           )
         )
+        .pipe(hooks.afterEsModules())
+        .pipe(hooks.beforeSourceMapsInit())
         .pipe(sourcemaps.init())
+        .pipe(hooks.afterSourceMapsInit())
+        .pipe(hooks.beforeBabel())
         .pipe(gif(es6 && !esModules, babel(babelOptions)))
-        .pipe(uglify(uglifyOptions).on('error', errorHandler))
+        .pipe(hooks.afterBabel())
+        .pipe(hooks.beforeUglify())
+        .pipe(gif(uglify, gulpUglify(uglifyOptions).on('error', errorHandler)))
+        .pipe(hooks.afterUglify())
+        .pipe(hooks.beforeSourceMapsWrite())
         .pipe(sourcemaps.write('maps'))
+        .pipe(hooks.afterSourceMapsWrite())
+        .pipe(hooks.beforeDest())
         .pipe(dest(dist))
+        .pipe(hooks.afterDest())
+        .pipe(hooks.beforeNotify())
         .pipe(
           gif(
             !args.quiet,
@@ -101,7 +142,8 @@ export const createScriptsBuilder = options => {
                 `The file ${relative} has been updated.`,
             })
           )
-        ),
+        )
+        .pipe(hooks.afterNotify()),
     {
       src,
       glob,
@@ -141,7 +183,8 @@ export const createScriptsLinter = options => {
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
-        .pipe(eslint.format()),
+        .pipe(eslint.format())
+        .pipe(gif(args.failAfterError, eslint.failAfterError())),
   ];
 };
 

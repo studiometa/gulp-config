@@ -1,3 +1,4 @@
+import PrettyError from 'pretty-error';
 import { series } from 'gulp';
 import isObject from 'lodash/isObject';
 import { createServer } from './tasks/server';
@@ -11,6 +12,9 @@ import {
   createScriptsLinter,
   createScriptsFormatter,
 } from './tasks/scripts';
+
+// Start immediately the pretty error instance
+PrettyError.start();
 
 /**
  * A gulp task generator
