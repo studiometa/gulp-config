@@ -1,5 +1,4 @@
 import { src as source, dest } from 'gulp';
-import { resolve } from 'path';
 import merge from 'lodash/merge';
 import eslint from 'gulp-eslint';
 import sourcemaps from 'gulp-sourcemaps';
@@ -97,7 +96,7 @@ export const createScriptsBuilder = options => {
   return [
     name,
     () =>
-      source(resolve(src, glob))
+      source(glob, { cwd: src })
         .pipe(hooks.beforeDiff())
         .pipe(diff(args.diffOnly))
         .pipe(hooks.afterDiff())
@@ -179,7 +178,7 @@ export const createScriptsLinter = options => {
   return [
     name,
     () =>
-      source(resolve(src, glob))
+      source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
@@ -218,7 +217,7 @@ export const createScriptsFormatter = options => {
   return [
     name,
     () =>
-      source(resolve(src, glob))
+      source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))

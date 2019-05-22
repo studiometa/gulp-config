@@ -69,7 +69,7 @@ export const createStylesBuilder = options => {
   return [
     name,
     () =>
-      source(resolve(src, glob))
+      source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(sassInheritance({ dir: src, cache: name }))
@@ -137,7 +137,7 @@ export const createStylesLinter = options => {
   return [
     name,
     () =>
-      source(resolve(src, glob))
+      source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions)),
@@ -183,7 +183,7 @@ export const createStylesFormatter = options => {
   return [
     name,
     () =>
-      source(resolve(src, glob))
+      source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))

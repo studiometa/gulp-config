@@ -57,7 +57,7 @@ export const create = options => {
 
     // Add styles watchers
     watchers.push({
-      files: [builderOptions.glob],
+      files: builderOptions.glob,
       options: {
         cwd: builderOptions.src,
       },
@@ -83,7 +83,7 @@ export const create = options => {
 
     // Trigger build and lint on source files when they change
     watchers.push({
-      files: [builderOptions.glob],
+      files: builderOptions.glob,
       options: {
         cwd: builderOptions.src,
       },
