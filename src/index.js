@@ -156,6 +156,11 @@ export const create = options => {
     tasks[serverName] = serverTask;
   }
 
+  // Register aliases tasks
+  tasks.lint = async () => series(...lintTasksNames)();
+  tasks.build = async () => series(...buildTasksNames)();
+  tasks.format = async () => series(...formatTasksNames)();
+
   // Register default task
   tasks.default = async () =>
     series(...lintTasksNames, ...buildTasksNames, ...serverTasksNames)();
