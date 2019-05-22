@@ -20,4 +20,8 @@ module.exports = create({
     },
   },
   server: true,
+  php: {
+    src: './tests/src/php',
+    glob: ['**/*.php', '!vendor/**'],
+  },
 });

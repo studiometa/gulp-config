@@ -12,6 +12,7 @@ import {
   createScriptsLinter,
   createScriptsFormatter,
 } from './tasks/scripts';
+import { createPHPLinter, createPHPFormatter } from './tasks/php';
 
 // Start immediately the pretty error instance
 PrettyError.start();
@@ -29,6 +30,9 @@ export const create = options => {
 
   /** @type {Array} An array for all the linter tasks */
   const lintTasksNames = [];
+
+  /** @type {Array} An array for all the lint fixer tasks */
+  const formatTasksNames = [];
 
   /** @type {Array} An array for all the server tasks */
   const serverTasksNames = [];
@@ -49,6 +53,7 @@ export const create = options => {
 
     buildTasksNames.push(builderName);
     lintTasksNames.push(linterName);
+    formatTasksNames.push(formatName);
 
     // Add styles watchers
     watchers.push({
@@ -74,6 +79,7 @@ export const create = options => {
 
     buildTasksNames.push(builderName);
     lintTasksNames.push(linterName);
+    formatTasksNames.push(formatName);
 
     // Trigger build and lint on source files when they change
     watchers.push({
@@ -99,6 +105,17 @@ export const create = options => {
     });
 
     tasks[builderName] = builderTask;
+    tasks[linterName] = linterTask;
+    tasks[formatName] = formatTask;
+  }
+
+  if ('php' in options) {
+    const [linterName, linterTask] = createPHPLinter(options.php);
+    const [formatName, formatTask] = createPHPFormatter(options.php);
+
+    lintTasksNames.push(linterName);
+    formatTasksNames.push(formatName);
+
     tasks[linterName] = linterTask;
     tasks[formatName] = formatTask;
   }
