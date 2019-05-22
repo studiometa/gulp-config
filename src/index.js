@@ -110,7 +110,9 @@ export const create = options => {
   }
 
   if ('php' in options) {
-    const [linterName, linterTask] = createPHPLinter(options.php);
+    const [linterName, linterTask, linterOptions] = createPHPLinter(
+      options.php
+    );
     const [formatName, formatTask] = createPHPFormatter(options.php);
 
     lintTasksNames.push(linterName);
@@ -118,6 +120,15 @@ export const create = options => {
 
     tasks[linterName] = linterTask;
     tasks[formatName] = formatTask;
+
+    // Lint files on change
+    watchers.push({
+      files: linterOptions.glob,
+      options: {
+        cwd: linterOptions.src,
+      },
+      tasks: [linterName],
+    });
   }
 
   // Generate server task

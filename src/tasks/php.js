@@ -3,6 +3,7 @@ import merge from 'lodash/merge';
 import phpcs from 'gulp-phpcs';
 import phpcbf from 'gulp-phpcbf';
 import gif from 'gulp-if';
+import notify from 'gulp-notify';
 import errorHandler from '../utils/error-handler';
 import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
@@ -43,6 +44,11 @@ export const createPHPLinter = options => {
         .pipe(phpcs(PHPCSOptions))
         .pipe(phpcs.reporter('log'))
         .pipe(gif(args.failAfterError, phpcs.reporter('fail'))),
+    {
+      src,
+      glob,
+      PHPCSOptions,
+    },
   ];
 };
 
@@ -80,6 +86,16 @@ export const createPHPFormatter = options => {
         .pipe(cache(name))
         .pipe(phpcbf(PHPCBFOptions))
         .on('error', errorHandler)
-        .pipe(dest(src)),
+        .pipe(dest(src))
+        .pipe(
+          gif(
+            !args.quiet,
+            notify({
+              title: `gulp ${name}`,
+              message: ({ relative }) =>
+                `The file ${relative} has been formatted with PHPCBF.`,
+            })
+          )
+        ),
   ];
 };
