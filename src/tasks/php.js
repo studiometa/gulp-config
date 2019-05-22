@@ -26,6 +26,8 @@ export const createPHPLinter = options => {
     PHPCSOptions: {
       bin: 'phpcs',
       standard: 'PSR2',
+      warningSeverity: 1,
+      errorSeverity: 1,
     },
   };
 
@@ -62,6 +64,8 @@ export const createPHPFormatter = options => {
     PHPCBFOptions: {
       bin: 'phpcbf',
       standard: 'PSR2',
+      warningSeverity: 1,
+      errorSeverity: 1,
     },
   };
 
