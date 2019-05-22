@@ -1,6 +1,6 @@
 {
   "name": "@studiometa/gulp-config",
-  "version": "1.4.0",
+  "version": "1.5.0-beta.0",
   "description": "Gulp configuration",
   "main": "dist/index.js",
   "scripts": {
@@ -48,6 +48,8 @@
     "gulp-filter": "^5.1.0",
     "gulp-if": "^2.0.2",
     "gulp-notify": "^3.2.0",
+    "gulp-phpcbf": "^0.1.2",
+    "gulp-phpcs": "^2.2.0",
     "gulp-postcss": "^8.0.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-stylelint": "^8.0.0",
