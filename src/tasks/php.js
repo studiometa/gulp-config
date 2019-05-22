@@ -1,5 +1,4 @@
 import { src as source, dest } from 'gulp';
-import { resolve } from 'path';
 import merge from 'lodash/merge';
 import phpcs from 'gulp-phpcs';
 import phpcbf from 'gulp-phpcbf';
@@ -36,7 +35,7 @@ export const createPHPLinter = options => {
   return [
     name,
     () =>
-      source(resolve(src, glob))
+      source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(phpcs(PHPCSOptions))
@@ -72,7 +71,7 @@ export const createPHPFormatter = options => {
   return [
     name,
     () =>
-      source(resolve(src, glob))
+      source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(phpcbf(PHPCBFOptions))
