@@ -81,13 +81,13 @@ export const createServer = options => {
   const { browserSyncOptions, watchers } = merge({}, defaults, options);
 
   return [
-    name,
     nameFunction(name, () => {
       // Init the browser sync server
       browserSync.init(browserSyncOptions);
       // Register all defined watcher
       registerWatchers(watchers);
     }),
+    { browserSyncOptions, watchers },
   ];
 };
 

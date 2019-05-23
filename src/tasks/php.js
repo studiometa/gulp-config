@@ -37,7 +37,6 @@ export const createPHPLinter = options => {
   const { src, glob, PHPCSOptions } = merge({}, defaults, options);
 
   return [
-    name,
     nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
@@ -46,11 +45,13 @@ export const createPHPLinter = options => {
         .pipe(phpcs.reporter('log'))
         .pipe(gif(args.failAfterError, phpcs.reporter('fail')))
     ),
-    {
-      src,
-      glob,
-      PHPCSOptions,
-    },
+
+    nameFunction(`${name}-cache`, () =>
+      source(glob, { cwd: src })
+        .pipe(diff(args.diffOnly))
+        .pipe(cache(name))
+    ),
+    { src, glob, PHPCSOptions },
   ];
 };
 
@@ -81,7 +82,6 @@ export const createPHPFormatter = options => {
   const { src, glob, PHPCBFOptions } = merge({}, defaults, options);
 
   return [
-    name,
     nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
@@ -100,5 +100,11 @@ export const createPHPFormatter = options => {
           )
         )
     ),
+    nameFunction(`${name}-cache`, () =>
+      source(glob, { cwd: src })
+        .pipe(diff(args.diffOnly))
+        .pipe(cache(name))
+    ),
+    { src, glob, PHPCBFOptions },
   ];
 };

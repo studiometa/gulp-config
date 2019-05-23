@@ -36,26 +36,30 @@ export const create = options => {
   /** @type {Array} An array for all the lint fixer tasks' functions */
   const formatTasks = [];
 
+  /** @type {Array} An array for all the cache tasks' functions */
+  const cacheTasks = [];
+
   /** @type {Array} An array for all the server tasks' functions */
   const serverTasks = [];
-
-  /** @type {Object} An object to register all the tasks */
-  const tasks = {};
 
   /** @type {Array} An array of watchers to add to the server task */
   const watchers = [];
 
   // Generate styles tasks
   if ('styles' in options) {
-    const [builderName, builderTask, builderOptions] = createStylesBuilder(
+    const [builderTask, builderCacheTask, builderOptions] = createStylesBuilder(
       options.styles
     );
-    const [linterName, linterTask] = createStylesLinter(options.styles);
-    const [formatName, formatTask] = createStylesFormatter(options.styles);
+    const [linterTask, linterCacheTask] = createStylesLinter(options.styles);
+    const [formatTask, formatCacheTask] = createStylesFormatter(options.styles);
 
     buildTasks.push(builderTask);
     lintTasks.push(linterTask);
     formatTasks.push(formatTask);
+
+    cacheTasks.push(builderCacheTask);
+    cacheTasks.push(linterCacheTask);
+    cacheTasks.push(formatCacheTask);
 
     // Add styles watchers
     watchers.push({
@@ -66,23 +70,27 @@ export const create = options => {
       },
       tasks: [builderTask, linterTask],
     });
-
-    tasks[builderName] = builderTask;
-    tasks[linterName] = linterTask;
-    tasks[formatName] = formatTask;
   }
 
   // Generate scripts tasks
   if ('scripts' in options) {
-    const [builderName, builderTask, builderOptions] = createScriptsBuilder(
+    const [
+      builderTask,
+      builderCacheTask,
+      builderOptions,
+    ] = createScriptsBuilder(options.scripts);
+    const [linterTask, linterCacheTask] = createScriptsLinter(options.scripts);
+    const [formatTask, formatCacheTask] = createScriptsFormatter(
       options.scripts
     );
-    const [linterName, linterTask] = createScriptsLinter(options.scripts);
-    const [formatName, formatTask] = createScriptsFormatter(options.scripts);
 
     buildTasks.push(builderTask);
     lintTasks.push(linterTask);
     formatTasks.push(formatTask);
+
+    cacheTasks.push(builderCacheTask);
+    cacheTasks.push(linterCacheTask);
+    cacheTasks.push(formatCacheTask);
 
     // Trigger build and lint on source files when they change
     watchers.push({
@@ -108,20 +116,19 @@ export const create = options => {
         },
       ],
     });
-
-    tasks[builderName] = builderTask;
-    tasks[linterName] = linterTask;
-    tasks[formatName] = formatTask;
   }
 
   if ('php' in options) {
-    const [linterName, linterTask, linterOptions] = createPHPLinter(
+    const [linterTask, linterCacheTask, linterOptions] = createPHPLinter(
       options.php
     );
-    const [formatName, formatTask] = createPHPFormatter(options.php);
+    const [formatTask, formatCacheTask] = createPHPFormatter(options.php);
 
     lintTasks.push(linterTask);
     formatTasks.push(formatTask);
+
+    cacheTasks.push(linterCacheTask);
+    cacheTasks.push(formatCacheTask);
 
     // Lint files on change
     watchers.push({
@@ -132,9 +139,6 @@ export const create = options => {
       },
       tasks: [linterTask],
     });
-
-    tasks[linterName] = linterTask;
-    tasks[formatName] = formatTask;
   }
 
   // Generate server task
@@ -157,25 +161,32 @@ export const create = options => {
     }
     watchers.forEach(watcher => options.server.watchers.push(watcher));
 
-    const [serverName, serverTask] = createServer(options.server);
+    const [serverTask] = createServer(options.server);
     serverTasks.push(serverTask);
-    tasks[serverName] = serverTask;
   }
 
   // Register aliases tasks
   const lint = async () => series(...lintTasks)();
   const build = async () => series(...buildTasks)();
   const format = async () => series(...formatTasks)();
+  const cache = async () => series(...cacheTasks)();
 
-  return {
-    ...tasks,
+  const tasks = {
     lint,
     build,
     format,
+    cache,
     default: nameFunction('default', async () =>
-      series(...lintTasks, ...buildTasks, ...serverTasks)()
+      series(...buildTasks, ...cacheTasks, ...serverTasks)()
     ),
   };
+
+  [...lintTasks, ...buildTasks, ...formatTasks, ...cacheTasks].forEach(task => {
+    console.log(task);
+    tasks[task.name] = task;
+  });
+
+  return tasks;
 };
 
 export default create;

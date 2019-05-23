@@ -95,7 +95,6 @@ export const createScriptsBuilder = options => {
   } = merge({}, defaults, options);
 
   return [
-    name,
     nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(hooks.beforeDiff())
@@ -145,6 +144,16 @@ export const createScriptsBuilder = options => {
         )
         .pipe(hooks.afterNotify())
     ),
+
+    nameFunction(`${name}-cache`, () =>
+      source(glob, { cwd: src })
+        .pipe(hooks.beforeDiff())
+        .pipe(diff(args.diffOnly))
+        .pipe(hooks.afterDiff())
+        .pipe(hooks.beforeCache())
+        .pipe(cache(name))
+        .pipe(hooks.afterCache())
+    ),
     {
       src,
       glob,
@@ -178,7 +187,6 @@ export const createScriptsLinter = options => {
   const { src, glob, ESLintOptions } = merge({}, defaults, options);
 
   return [
-    name,
     nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
@@ -187,6 +195,17 @@ export const createScriptsLinter = options => {
         .pipe(eslint.format())
         .pipe(gif(args.failAfterError, eslint.failAfterError()))
     ),
+
+    nameFunction(`${name}-cache`, () =>
+      source(glob, { cwd: src })
+        .pipe(diff(args.diffOnly))
+        .pipe(cache(name))
+    ),
+    {
+      src,
+      glob,
+      ESLintOptions,
+    },
   ];
 };
 
@@ -218,7 +237,6 @@ export const createScriptsFormatter = options => {
   ESLintOptions.fix = true;
 
   return [
-    name,
     nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
@@ -236,5 +254,11 @@ export const createScriptsFormatter = options => {
           )
         )
     ),
+    nameFunction(`${name}-cache`, () =>
+      source(glob, { cwd: src })
+        .pipe(diff(args.diffOnly))
+        .pipe(cache(name))
+    ),
+    { src, glob, ESLintOptions },
   ];
 };

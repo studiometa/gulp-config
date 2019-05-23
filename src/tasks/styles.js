@@ -68,7 +68,6 @@ export const createStylesBuilder = options => {
   const distAbsolute = resolve(dist);
 
   return [
-    name,
     nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
@@ -92,6 +91,11 @@ export const createStylesBuilder = options => {
             })
           )
         )
+    ),
+    nameFunction(`${name}-cache`, () =>
+      source(glob, { cwd: src })
+        .pipe(diff(args.diffOnly))
+        .pipe(cache(name))
     ),
     {
       src,
@@ -137,13 +141,18 @@ export const createStylesLinter = options => {
   styleLintOptions.failAfterError = args.failAfterError;
 
   return [
-    name,
     nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
     ),
+    nameFunction(`${name}-cache`, () =>
+      source(glob, { cwd: src })
+        .pipe(diff(args.diffOnly))
+        .pipe(cache(name))
+    ),
+    { src, glob, styleLintOptions },
   ];
 };
 
@@ -184,7 +193,6 @@ export const createStylesFormatter = options => {
   styleLintOptions.fix = true;
 
   return [
-    name,
     nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
@@ -202,5 +210,11 @@ export const createStylesFormatter = options => {
           )
         )
     ),
+    nameFunction(`${name}-cache`, () =>
+      source(glob, { cwd: src })
+        .pipe(diff(args.diffOnly))
+        .pipe(cache(name))
+    ),
+    { src, glob, styleLintOptions },
   ];
 };
