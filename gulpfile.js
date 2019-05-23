@@ -23,5 +23,8 @@ module.exports = create({
   php: {
     src: './tests/src/php',
     glob: ['**/*.php', '!vendor/**'],
+    PHPCSOptions: {
+      bin: 'phpcs',
+    },
   },
 });

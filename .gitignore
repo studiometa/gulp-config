@@ -5,6 +5,7 @@
 *.sublime-project
 *.sublime-workspace
 node_modules/
+vendor/
 npm-debug.log
 package-lock.json
 .deploys

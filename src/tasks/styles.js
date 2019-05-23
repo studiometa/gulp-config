@@ -34,7 +34,7 @@ export const createStylesBuilder = options => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/styles',
-    glob: '**/*.scss',
+    glob: ['**/*.scss'],
     dist: 'dist/styles',
     postCssPlugins: [autoprefixer()],
     cleanCssOptions: {
@@ -118,7 +118,7 @@ export const createStylesLinter = options => {
   /** @type {Object} The linting task default options */
   const defaults = {
     src: 'src/styles',
-    glob: '**/*.scss',
+    glob: ['**/*.scss'],
     styleLintOptions: {
       failAfterError: false,
       reporters: [
@@ -161,7 +161,7 @@ export const createStylesFormatter = options => {
   /** @type {Object} The linting task default options */
   const defaults = {
     src: 'src/styles',
-    glob: '**/*.scss',
+    glob: ['**/*.scss'],
     styleLintOptions: {
       failAfterError: false,
       fix: true,

@@ -29,7 +29,7 @@ export const createScriptsBuilder = options => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/scripts',
-    glob: '**/*.js',
+    glob: ['**/*.js'],
     dist: 'src/scripts',
     uglify: true,
     uglifyOptions: {
@@ -168,7 +168,7 @@ export const createScriptsLinter = options => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/scripts',
-    glob: '**/*.js',
+    glob: ['**/*.js'],
     ESLintOptions: {
       useEslintrc: true,
     },
@@ -204,7 +204,7 @@ export const createScriptsFormatter = options => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/scripts',
-    glob: '**/*.js',
+    glob: ['**/*.js'],
     ESLintOptions: {
       useEslintrc: true,
       fix: true,

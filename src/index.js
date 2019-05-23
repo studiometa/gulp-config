@@ -13,6 +13,7 @@ import {
   createScriptsFormatter,
 } from './tasks/scripts';
 import { createPHPLinter, createPHPFormatter } from './tasks/php';
+import getGlobsToIgnore from './utils/get-globs-to-ignore';
 import nameFunction from './utils/name-function';
 
 // Start immediately the pretty error instance
@@ -61,6 +62,7 @@ export const create = options => {
       files: builderOptions.glob,
       options: {
         cwd: builderOptions.src,
+        ignore: getGlobsToIgnore(builderOptions.glob),
       },
       tasks: [builderTask, linterTask],
     });
@@ -87,15 +89,17 @@ export const create = options => {
       files: builderOptions.glob,
       options: {
         cwd: builderOptions.src,
+        ignore: getGlobsToIgnore(builderOptions.glob),
       },
       tasks: [builderTask, linterTask],
     });
 
     // Trigger browser reload when any dist files changes
     watchers.push({
-      files: [builderOptions.glob],
+      files: builderOptions.glob,
       options: {
         cwd: builderOptions.dist,
+        ignore: getGlobsToIgnore(builderOptions.glob),
       },
       callbacks: [
         {
@@ -124,6 +128,7 @@ export const create = options => {
       files: linterOptions.glob,
       options: {
         cwd: linterOptions.src,
+        ignore: getGlobsToIgnore(linterOptions.glob),
       },
       tasks: [linterTask],
     });

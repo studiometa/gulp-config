@@ -24,9 +24,9 @@ export const createPHPLinter = options => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/php',
-    glob: '**/*.php',
+    glob: ['**/*.php', '!**/vendor/**'],
     PHPCSOptions: {
-      bin: 'phpcs',
+      bin: 'vendor/bin/phpcs',
       standard: 'PSR2',
       warningSeverity: 1,
       errorSeverity: 1,
@@ -68,9 +68,9 @@ export const createPHPFormatter = options => {
   /** @type {Object} The defaults options */
   const defaults = {
     src: 'src/php',
-    glob: '**/*.php',
+    glob: ['**/*.php', '!**/vendor/**'],
     PHPCBFOptions: {
-      bin: 'phpcbf',
+      bin: 'vendor/bin/phpcbf',
       standard: 'PSR2',
       warningSeverity: 1,
       errorSeverity: 1,
