@@ -45,7 +45,6 @@ export const createPHPLinter = options => {
         .pipe(phpcs.reporter('log'))
         .pipe(gif(args.failAfterError, phpcs.reporter('fail')))
     ),
-
     nameFunction(`${name}-cache`, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))

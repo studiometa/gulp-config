@@ -67,7 +67,7 @@ export const create = options => {
       files: builderOptions.glob,
       options: {
         cwd: builderOptions.src,
-        ignore: getGlobsToIgnore(builderOptions.glob),
+        ignored: getGlobsToIgnore(builderOptions.glob),
       },
       tasks: [builderTask, linterTask],
     });
@@ -98,7 +98,7 @@ export const create = options => {
       files: builderOptions.glob,
       options: {
         cwd: builderOptions.src,
-        ignore: getGlobsToIgnore(builderOptions.glob),
+        ignored: getGlobsToIgnore(builderOptions.glob),
       },
       tasks: [builderTask, linterTask],
     });
@@ -108,7 +108,7 @@ export const create = options => {
       files: builderOptions.glob,
       options: {
         cwd: builderOptions.dist,
-        ignore: getGlobsToIgnore(builderOptions.glob),
+        ignored: getGlobsToIgnore(builderOptions.glob),
       },
       callbacks: [
         {
@@ -136,7 +136,7 @@ export const create = options => {
       files: linterOptions.glob,
       options: {
         cwd: linterOptions.src,
-        ignore: getGlobsToIgnore(linterOptions.glob),
+        ignored: getGlobsToIgnore(linterOptions.glob),
       },
       tasks: [linterTask],
     });
