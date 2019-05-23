@@ -180,7 +180,7 @@ export const create = options => {
     ),
   };
 
-  [...lintTasks, ...buildTasks, ...formatTasks]
+  [...lintTasks, ...buildTasks, ...formatTasks, ...serverTasks]
     .sort(sortByKey('name'))
     .reduce((acc, task) => {
       acc[task.name] = task;
