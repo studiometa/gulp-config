@@ -15,6 +15,7 @@ import {
 import { createPHPLinter, createPHPFormatter } from './tasks/php';
 import getGlobsToIgnore from './utils/get-globs-to-ignore';
 import nameFunction from './utils/name-function';
+import sortByKey from './utils/sort-by-key';
 
 // Start immediately the pretty error instance
 PrettyError.start();
@@ -169,22 +170,22 @@ export const create = options => {
   const lint = async () => series(...lintTasks)();
   const build = async () => series(...buildTasks)();
   const format = async () => series(...formatTasks)();
-  const cache = async () => series(...cacheTasks)();
 
   const tasks = {
     lint,
     build,
     format,
-    cache,
     default: nameFunction('default', async () =>
       series(...buildTasks, ...cacheTasks, ...serverTasks)()
     ),
   };
 
-  [...lintTasks, ...buildTasks, ...formatTasks, ...cacheTasks].forEach(task => {
-    console.log(task);
-    tasks[task.name] = task;
-  });
+  [...lintTasks, ...buildTasks, ...formatTasks]
+    .sort(sortByKey('name'))
+    .reduce((acc, task) => {
+      acc[task.name] = task;
+      return acc;
+    }, tasks);
 
   return tasks;
 };
