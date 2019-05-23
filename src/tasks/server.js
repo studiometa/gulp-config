@@ -1,7 +1,7 @@
 import { series, watch } from 'gulp';
 import browserSync from 'browser-sync';
 import merge from 'lodash/merge';
-
+import nameFunction from '../utils/name-function';
 /**
  * Regiester all the given callbacks on the given watcher
  *
@@ -82,12 +82,12 @@ export const createServer = options => {
 
   return [
     name,
-    () => {
+    nameFunction(name, () => {
       // Init the browser sync server
       browserSync.init(browserSyncOptions);
       // Register all defined watcher
       registerWatchers(watchers);
-    },
+    }),
   ];
 };
 

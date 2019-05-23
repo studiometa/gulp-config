@@ -13,6 +13,7 @@ import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
 import noop from '../plugins/gulp-noop';
 import args from '../utils/arguments';
+import nameFunction from '../utils/name-function';
 
 /**
  * Create the `scripts-build` Gulp task
@@ -95,7 +96,7 @@ export const createScriptsBuilder = options => {
 
   return [
     name,
-    () =>
+    nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(hooks.beforeDiff())
         .pipe(diff(args.diffOnly))
@@ -142,7 +143,8 @@ export const createScriptsBuilder = options => {
             })
           )
         )
-        .pipe(hooks.afterNotify()),
+        .pipe(hooks.afterNotify())
+    ),
     {
       src,
       glob,
@@ -177,13 +179,14 @@ export const createScriptsLinter = options => {
 
   return [
     name,
-    () =>
+    nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
         .pipe(eslint.format())
-        .pipe(gif(args.failAfterError, eslint.failAfterError())),
+        .pipe(gif(args.failAfterError, eslint.failAfterError()))
+    ),
   ];
 };
 
@@ -216,7 +219,7 @@ export const createScriptsFormatter = options => {
 
   return [
     name,
-    () =>
+    nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
@@ -231,6 +234,7 @@ export const createScriptsFormatter = options => {
                 `The file ${relative} has been formatted with ESLint.`,
             })
           )
-        ),
+        )
+    ),
   ];
 };

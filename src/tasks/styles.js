@@ -18,6 +18,7 @@ import args from '../utils/arguments';
 import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
 import sassInheritance from '../plugins/gulp-sass-inheritance';
+import nameFunction from '../utils/name-function';
 
 /**
  * Create the styles compilation task
@@ -68,7 +69,7 @@ export const createStylesBuilder = options => {
 
   return [
     name,
-    () =>
+    nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
@@ -90,7 +91,8 @@ export const createStylesBuilder = options => {
                 `The file ${relative} has been updated.`,
             })
           )
-        ),
+        )
+    ),
     {
       src,
       glob,
@@ -136,11 +138,12 @@ export const createStylesLinter = options => {
 
   return [
     name,
-    () =>
+    nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
-        .pipe(styleLint(styleLintOptions)),
+        .pipe(styleLint(styleLintOptions))
+    ),
   ];
 };
 
@@ -182,7 +185,7 @@ export const createStylesFormatter = options => {
 
   return [
     name,
-    () =>
+    nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
@@ -197,6 +200,7 @@ export const createStylesFormatter = options => {
                 `The file ${relative} has been formatted with StyleLint.`,
             })
           )
-        ),
+        )
+    ),
   ];
 };

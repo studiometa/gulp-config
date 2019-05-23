@@ -13,6 +13,7 @@ import {
   createScriptsFormatter,
 } from './tasks/scripts';
 import { createPHPLinter, createPHPFormatter } from './tasks/php';
+import nameFunction from './utils/name-function';
 
 // Start immediately the pretty error instance
 PrettyError.start();
@@ -25,17 +26,17 @@ PrettyError.start();
  * @return {Object}         An object containing all the tasks
  */
 export const create = options => {
-  /** @type {Array} An array for the builder tasks */
-  const buildTasksNames = [];
+  /** @type {Array} An array for the builder tasks' functions */
+  const buildTasks = [];
 
-  /** @type {Array} An array for all the linter tasks */
-  const lintTasksNames = [];
+  /** @type {Array} An array for all the linter tasks' functions */
+  const lintTasks = [];
 
-  /** @type {Array} An array for all the lint fixer tasks */
-  const formatTasksNames = [];
+  /** @type {Array} An array for all the lint fixer tasks' functions */
+  const formatTasks = [];
 
-  /** @type {Array} An array for all the server tasks */
-  const serverTasksNames = [];
+  /** @type {Array} An array for all the server tasks' functions */
+  const serverTasks = [];
 
   /** @type {Object} An object to register all the tasks */
   const tasks = {};
@@ -51,9 +52,9 @@ export const create = options => {
     const [linterName, linterTask] = createStylesLinter(options.styles);
     const [formatName, formatTask] = createStylesFormatter(options.styles);
 
-    buildTasksNames.push(builderName);
-    lintTasksNames.push(linterName);
-    formatTasksNames.push(formatName);
+    buildTasks.push(builderTask);
+    lintTasks.push(linterTask);
+    formatTasks.push(formatTask);
 
     // Add styles watchers
     watchers.push({
@@ -61,7 +62,7 @@ export const create = options => {
       options: {
         cwd: builderOptions.src,
       },
-      tasks: [builderName, linterName],
+      tasks: [builderTask, linterTask],
     });
 
     tasks[builderName] = builderTask;
@@ -77,9 +78,9 @@ export const create = options => {
     const [linterName, linterTask] = createScriptsLinter(options.scripts);
     const [formatName, formatTask] = createScriptsFormatter(options.scripts);
 
-    buildTasksNames.push(builderName);
-    lintTasksNames.push(linterName);
-    formatTasksNames.push(formatName);
+    buildTasks.push(builderTask);
+    lintTasks.push(linterTask);
+    formatTasks.push(formatTask);
 
     // Trigger build and lint on source files when they change
     watchers.push({
@@ -87,7 +88,7 @@ export const create = options => {
       options: {
         cwd: builderOptions.src,
       },
-      tasks: [builderName, linterName],
+      tasks: [builderTask, linterTask],
     });
 
     // Trigger browser reload when any dist files changes
@@ -115,11 +116,8 @@ export const create = options => {
     );
     const [formatName, formatTask] = createPHPFormatter(options.php);
 
-    lintTasksNames.push(linterName);
-    formatTasksNames.push(formatName);
-
-    tasks[linterName] = linterTask;
-    tasks[formatName] = formatTask;
+    lintTasks.push(linterTask);
+    formatTasks.push(formatTask);
 
     // Lint files on change
     watchers.push({
@@ -127,8 +125,11 @@ export const create = options => {
       options: {
         cwd: linterOptions.src,
       },
-      tasks: [linterName],
+      tasks: [linterTask],
     });
+
+    tasks[linterName] = linterTask;
+    tasks[formatName] = formatTask;
   }
 
   // Generate server task
@@ -152,20 +153,24 @@ export const create = options => {
     watchers.forEach(watcher => options.server.watchers.push(watcher));
 
     const [serverName, serverTask] = createServer(options.server);
-    serverTasksNames.push(serverName);
+    serverTasks.push(serverTask);
     tasks[serverName] = serverTask;
   }
 
   // Register aliases tasks
-  tasks.lint = async () => series(...lintTasksNames)();
-  tasks.build = async () => series(...buildTasksNames)();
-  tasks.format = async () => series(...formatTasksNames)();
+  const lint = async () => series(...lintTasks)();
+  const build = async () => series(...buildTasks)();
+  const format = async () => series(...formatTasks)();
 
-  // Register default task
-  tasks.default = async () =>
-    series(...lintTasksNames, ...buildTasksNames, ...serverTasksNames)();
-
-  return tasks;
+  return {
+    ...tasks,
+    lint,
+    build,
+    format,
+    default: nameFunction('default', async () =>
+      series(...lintTasks, ...buildTasks, ...serverTasks)()
+    ),
+  };
 };
 
 export default create;

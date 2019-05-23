@@ -8,6 +8,7 @@ import errorHandler from '../utils/error-handler';
 import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
 import args from '../utils/arguments';
+import nameFunction from '../utils/name-function';
 
 /**
  * Create the `scripts-lint` Gulp task
@@ -37,13 +38,14 @@ export const createPHPLinter = options => {
 
   return [
     name,
-    () =>
+    nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(phpcs(PHPCSOptions))
         .pipe(phpcs.reporter('log'))
-        .pipe(gif(args.failAfterError, phpcs.reporter('fail'))),
+        .pipe(gif(args.failAfterError, phpcs.reporter('fail')))
+    ),
     {
       src,
       glob,
@@ -80,7 +82,7 @@ export const createPHPFormatter = options => {
 
   return [
     name,
-    () =>
+    nameFunction(name, () =>
       source(glob, { cwd: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
@@ -96,6 +98,7 @@ export const createPHPFormatter = options => {
                 `The file ${relative} has been formatted with PHPCBF.`,
             })
           )
-        ),
+        )
+    ),
   ];
 };
