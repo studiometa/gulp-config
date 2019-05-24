@@ -69,7 +69,7 @@ export const createStylesBuilder = options => {
 
   return [
     nameFunction(name, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(sassInheritance({ dir: src, cache: name }))
@@ -93,7 +93,7 @@ export const createStylesBuilder = options => {
         )
     ),
     nameFunction(`${name}-cache`, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
     ),
@@ -142,13 +142,13 @@ export const createStylesLinter = options => {
 
   return [
     nameFunction(name, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
     ),
     nameFunction(`${name}-cache`, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
     ),
@@ -194,7 +194,7 @@ export const createStylesFormatter = options => {
 
   return [
     nameFunction(name, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(styleLint(styleLintOptions))
@@ -211,7 +211,7 @@ export const createStylesFormatter = options => {
         )
     ),
     nameFunction(`${name}-cache`, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
     ),

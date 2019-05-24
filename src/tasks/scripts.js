@@ -96,7 +96,7 @@ export const createScriptsBuilder = options => {
 
   return [
     nameFunction(name, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(hooks.beforeDiff())
         .pipe(diff(args.diffOnly))
         .pipe(hooks.afterDiff())
@@ -146,7 +146,7 @@ export const createScriptsBuilder = options => {
     ),
 
     nameFunction(`${name}-cache`, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(hooks.beforeDiff())
         .pipe(diff(args.diffOnly))
         .pipe(hooks.afterDiff())
@@ -188,7 +188,7 @@ export const createScriptsLinter = options => {
 
   return [
     nameFunction(name, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
@@ -197,7 +197,7 @@ export const createScriptsLinter = options => {
     ),
 
     nameFunction(`${name}-cache`, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
     ),
@@ -238,7 +238,7 @@ export const createScriptsFormatter = options => {
 
   return [
     nameFunction(name, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
         .pipe(eslint(ESLintOptions))
@@ -255,7 +255,7 @@ export const createScriptsFormatter = options => {
         )
     ),
     nameFunction(`${name}-cache`, () =>
-      source(glob, { cwd: src })
+      source(glob, { cwd: src, base: src })
         .pipe(diff(args.diffOnly))
         .pipe(cache(name))
     ),
