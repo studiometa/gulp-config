@@ -85,7 +85,8 @@ export default function gulpSassInheritance(options = {}) {
           }
         });
 
-        filesToEmit[file.path] = file;
+        // Always get file from cache
+        filesToEmit[file.path] = cache.getObject(options.cache, file.path).file;
       });
 
       Object.keys(filesToEmit).forEach(path => {
