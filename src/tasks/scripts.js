@@ -46,11 +46,11 @@ export const createScriptsBuilder = options => {
         drop_console: true,
       },
     },
-    es6: false,
+    es6: true,
     babelOptions: {
       presets: ['@babel/preset-env'],
     },
-    esModules: false,
+    esModules: true,
     webpackOptions: {},
     hooks: {
       beforeDiff: noop,
