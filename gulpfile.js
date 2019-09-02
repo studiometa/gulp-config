@@ -9,16 +9,6 @@ module.exports = create({
   scripts: {
     src: resolve('./tests/src/scripts'),
     dist: resolve('./tests/dist/scripts'),
-    es6: true,
-    esModules: true,
-    webpackOptions: {
-      entry: {
-        esModules: './tests/src/scripts/es-modules.js',
-      },
-      output: {
-        filename: '[name].js',
-      },
-    },
   },
   server: true,
   php: {
