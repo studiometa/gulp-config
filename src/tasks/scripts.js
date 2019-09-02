@@ -10,11 +10,7 @@ import gif from 'gulp-if';
 import filter from 'gulp-filter';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
-import {
-  mergeConfig,
-  defaultConfig,
-  findEntries,
-} from '@studiometa/webpack-config';
+import { mergeConfig, findEntries } from '@studiometa/webpack-config';
 import errorHandler from '../utils/error-handler';
 import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
@@ -118,15 +114,11 @@ export const createScriptsBuilder = options => {
             webpackStream(webpackConfig, webpack, (err, stats) => {
               console.log(
                 stats.toString({
-                  ...defaultConfig.stats,
+                  ...webpackConfig.stats,
                   colors: true,
                 })
               );
-              const { errors, warnings } = stats.compilation;
-              [...errors, ...warnings].forEach(errorHandler.bind(this));
-            }).on('error', function err() {
-              this.emit('end');
-            })
+            }).on('error', errorHandler)
           )
         )
         .pipe(hooks.afterEsModules())
