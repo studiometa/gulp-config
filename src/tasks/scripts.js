@@ -1,4 +1,5 @@
 import { src as source, dest } from 'gulp';
+import { extname } from 'path';
 import merge from 'lodash/merge';
 import eslint from 'gulp-eslint';
 import sourcemaps from 'gulp-sourcemaps';
@@ -6,12 +7,14 @@ import gulpUglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import babel from 'gulp-babel';
 import gif from 'gulp-if';
+import filter from 'gulp-filter';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
 import errorHandler from '../utils/error-handler';
 import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
 import noop from '../plugins/gulp-noop';
+import log from '../plugins/gulp-log';
 import args from '../utils/arguments';
 import nameFunction from '../utils/name-function';
 
@@ -132,13 +135,24 @@ export const createScriptsBuilder = options => {
         .pipe(dest(dist))
         .pipe(hooks.afterDest())
         .pipe(hooks.beforeNotify())
+        .pipe(filter(file => extname(file.path) !== '.map'))
         .pipe(
           gif(
             !args.quiet,
-            notify({
-              title: `gulp ${name}`,
-              message: ({ relative }) =>
-                `The file ${relative} has been updated.`,
+            notify(
+              JSON.parse(
+                JSON.stringify({
+                  title: `gulp ${name}`,
+                  message: 'The file <%= file.relative %> has been updated.',
+                })
+              )
+            ),
+            log((file, colors) => {
+              const coloredName = colors.blue(`gulp ${name}`);
+              const msg = `The file ${colors.green(
+                file.relative
+              )} has been updated.`;
+              return `[${coloredName}] ${msg}`;
             })
           )
         )

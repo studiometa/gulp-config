@@ -1,5 +1,5 @@
 import { src as source, dest } from 'gulp';
-import { resolve, basename } from 'path';
+import { resolve, basename, extname } from 'path';
 import isArray from 'lodash/isArray';
 import sass from 'gulp-dart-sass';
 import cleanCss from 'gulp-clean-css';
@@ -17,6 +17,7 @@ import errorHandler from '../utils/error-handler';
 import args from '../utils/arguments';
 import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
+import log from '../plugins/gulp-log';
 import sassInheritance from '../plugins/gulp-sass-inheritance';
 import nameFunction from '../utils/name-function';
 
@@ -81,13 +82,24 @@ export const createStylesBuilder = options => {
         .pipe(sourcemaps.write('maps'))
         .pipe(dest(file => file.base.replace(srcAbsolute, distAbsolute)))
         .pipe(browserSync.stream())
+        .pipe(filter(file => extname(file.path) !== '.map'))
         .pipe(
           gif(
             !args.quiet,
-            notify({
-              title: `gulp ${name}`,
-              message: ({ relative }) =>
-                `The file ${relative} has been updated.`,
+            notify(
+              JSON.parse(
+                JSON.stringify({
+                  title: `gulp ${name}`,
+                  message: 'The file <%= file.relative %> has been updated.',
+                })
+              )
+            ),
+            log((file, colors) => {
+              const coloredName = colors.blue(`gulp ${name}`);
+              const msg = `The file ${colors.green(
+                file.relative
+              )} has been updated.`;
+              return `[${coloredName}] ${msg}`;
             })
           )
         )
