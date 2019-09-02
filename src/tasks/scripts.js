@@ -10,6 +10,11 @@ import gif from 'gulp-if';
 import filter from 'gulp-filter';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
+import {
+  mergeConfig,
+  defaultConfig,
+  findEntries,
+} from '@studiometa/webpack-config';
 import errorHandler from '../utils/error-handler';
 import cache from '../plugins/gulp-cache';
 import diff from '../plugins/gulp-diff';
@@ -41,26 +46,12 @@ export const createScriptsBuilder = options => {
         drop_console: true,
       },
     },
-    es6: false,
+    es6: true,
     babelOptions: {
       presets: ['@babel/preset-env'],
     },
-    esModules: false,
-    webpackOptions: {
-      mode: 'production',
-      devtool: false,
-      module: {
-        rules: [
-          {
-            test: /\.js$/,
-            exclude: /(node_modules|bower_components)/,
-            use: {
-              loader: 'babel-loader',
-            },
-          },
-        ],
-      },
-    },
+    esModules: true,
+    webpackOptions: {},
     hooks: {
       beforeDiff: noop,
       afterDiff: noop,
@@ -97,6 +88,20 @@ export const createScriptsBuilder = options => {
     hooks,
   } = merge({}, defaults, options);
 
+  const webpackGlob = Array.isArray(glob)
+    ? [...glob, '!**/_*.js']
+    : [glob, '!**/_*.js'];
+  const webpackConfig = mergeConfig(
+    {
+      entry: findEntries(webpackGlob, src),
+      output: {
+        path: dist,
+      },
+    },
+    webpackOptions
+  );
+  webpack(webpackConfig);
+
   return [
     nameFunction(name, () =>
       source(glob, { cwd: src, base: src })
@@ -110,7 +115,13 @@ export const createScriptsBuilder = options => {
         .pipe(
           gif(
             es6 && esModules,
-            webpackStream(webpackOptions, webpack, (err, stats) => {
+            webpackStream(webpackConfig, webpack, (err, stats) => {
+              console.log(
+                stats.toString({
+                  ...defaultConfig.stats,
+                  colors: true,
+                })
+              );
               const { errors, warnings } = stats.compilation;
               [...errors, ...warnings].forEach(errorHandler.bind(this));
             }).on('error', function err() {
@@ -120,16 +131,21 @@ export const createScriptsBuilder = options => {
         )
         .pipe(hooks.afterEsModules())
         .pipe(hooks.beforeSourceMapsInit())
-        .pipe(sourcemaps.init())
+        .pipe(gif(!esModules, sourcemaps.init()))
         .pipe(hooks.afterSourceMapsInit())
         .pipe(hooks.beforeBabel())
         .pipe(gif(es6 && !esModules, babel(babelOptions)))
         .pipe(hooks.afterBabel())
         .pipe(hooks.beforeUglify())
-        .pipe(gif(uglify, gulpUglify(uglifyOptions).on('error', errorHandler)))
+        .pipe(
+          gif(
+            uglify && !esModules,
+            gulpUglify(uglifyOptions).on('error', errorHandler)
+          )
+        )
         .pipe(hooks.afterUglify())
         .pipe(hooks.beforeSourceMapsWrite())
-        .pipe(sourcemaps.write('maps'))
+        .pipe(gif(!esModules, sourcemaps.write('maps')))
         .pipe(hooks.afterSourceMapsWrite())
         .pipe(hooks.beforeDest())
         .pipe(dest(dist))
