@@ -1,4 +1,5 @@
 import { src as source, dest } from 'gulp';
+import { extname } from 'path';
 import merge from 'lodash/merge';
 import eslint from 'gulp-eslint';
 import sourcemaps from 'gulp-sourcemaps';
@@ -6,6 +7,7 @@ import gulpUglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import babel from 'gulp-babel';
 import gif from 'gulp-if';
+import filter from 'gulp-filter';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
 import errorHandler from '../utils/error-handler';
@@ -132,6 +134,7 @@ export const createScriptsBuilder = options => {
         .pipe(dest(dist))
         .pipe(hooks.afterDest())
         .pipe(hooks.beforeNotify())
+        .pipe(filter(file => extname(file.path) !== '.map'))
         .pipe(
           gif(
             !args.quiet,

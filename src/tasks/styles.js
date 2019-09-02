@@ -1,5 +1,5 @@
 import { src as source, dest } from 'gulp';
-import { resolve, basename } from 'path';
+import { resolve, basename, extname } from 'path';
 import isArray from 'lodash/isArray';
 import sass from 'gulp-dart-sass';
 import cleanCss from 'gulp-clean-css';
@@ -81,6 +81,7 @@ export const createStylesBuilder = options => {
         .pipe(sourcemaps.write('maps'))
         .pipe(dest(file => file.base.replace(srcAbsolute, distAbsolute)))
         .pipe(browserSync.stream())
+        .pipe(filter(file => extname(file.path) !== '.map'))
         .pipe(
           gif(
             !args.quiet,
