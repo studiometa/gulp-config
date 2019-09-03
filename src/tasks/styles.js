@@ -20,6 +20,7 @@ import diff from '../plugins/gulp-diff';
 import log from '../plugins/gulp-log';
 import sassInheritance from '../plugins/gulp-sass-inheritance';
 import nameFunction from '../utils/name-function';
+import logFilesUpdate from '../utils/log-files-update';
 
 /**
  * Create the styles compilation task
@@ -94,13 +95,7 @@ export const createStylesBuilder = options => {
                 })
               )
             ),
-            log((file, colors) => {
-              const coloredName = colors.blue(`gulp ${name}`);
-              const msg = `The file ${colors.green(
-                file.relative
-              )} has been updated.`;
-              return `[${coloredName}] ${msg}`;
-            })
+            log(null, logFilesUpdate(name))
           )
         )
     ),

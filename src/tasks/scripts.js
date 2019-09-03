@@ -18,6 +18,7 @@ import noop from '../plugins/gulp-noop';
 import log from '../plugins/gulp-log';
 import args from '../utils/arguments';
 import nameFunction from '../utils/name-function';
+import logFilesUpdate from '../utils/log-files-update';
 
 /**
  * Create the `scripts-build` Gulp task
@@ -96,7 +97,10 @@ export const createScriptsBuilder = options => {
     },
     webpackOptions
   );
-  webpack(webpackConfig);
+
+  if (esModules) {
+    webpack(webpackConfig);
+  }
 
   return [
     nameFunction(name, () =>
@@ -118,6 +122,7 @@ export const createScriptsBuilder = options => {
                   colors: true,
                 })
               );
+              console.log();
             }).on('error', errorHandler)
           )
         )
@@ -154,16 +159,10 @@ export const createScriptsBuilder = options => {
                   message: 'The file <%= file.relative %> has been updated.',
                 })
               )
-            ),
-            log((file, colors) => {
-              const coloredName = colors.blue(`gulp ${name}`);
-              const msg = `The file ${colors.green(
-                file.relative
-              )} has been updated.`;
-              return `[${coloredName}] ${msg}`;
-            })
+            )
           )
         )
+        .pipe(gif(args.quiet && !esModules, log(null, logFilesUpdate(name))))
         .pipe(hooks.afterNotify())
     ),
 
