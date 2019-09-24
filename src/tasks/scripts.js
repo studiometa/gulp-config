@@ -85,25 +85,65 @@ export const createScriptsBuilder = options => {
     hooks,
   } = merge({}, defaults, options);
 
-  const webpackGlob = Array.isArray(glob)
-    ? [...glob, '!**/_*.js']
-    : [glob, '!**/_*.js'];
-  const webpackConfig = mergeConfig(
-    {
-      entry: findEntries(webpackGlob, src),
-      output: {
-        path: dist,
-      },
-    },
-    webpackOptions
+  let build = nameFunction(name, () =>
+    source(glob, { cwd: src, base: src })
+      .pipe(hooks.beforeDiff())
+      .pipe(diff(args.diffOnly))
+      .pipe(hooks.afterDiff())
+      .pipe(hooks.beforeCache())
+      .pipe(cache(name))
+      .pipe(hooks.afterCache())
+      .pipe(hooks.beforeSourceMapsInit())
+      .pipe(sourcemaps.init())
+      .pipe(hooks.afterSourceMapsInit())
+      .pipe(hooks.beforeBabel())
+      .pipe(gif(es6, babel(babelOptions)))
+      .pipe(hooks.afterBabel())
+      .pipe(hooks.beforeUglify())
+      .pipe(gif(uglify, gulpUglify(uglifyOptions).on('error', errorHandler)))
+      .pipe(hooks.afterUglify())
+      .pipe(hooks.beforeSourceMapsWrite())
+      .pipe(sourcemaps.write('maps'))
+      .pipe(hooks.afterSourceMapsWrite())
+      .pipe(hooks.beforeDest())
+      .pipe(dest(dist))
+      .pipe(hooks.afterDest())
+      .pipe(hooks.beforeNotify())
+      .pipe(filter(file => extname(file.path) !== '.map'))
+      .pipe(
+        gif(
+          !args.quiet,
+          notify(
+            JSON.parse(
+              JSON.stringify({
+                title: `gulp ${name}`,
+                message: 'The file <%= file.relative %> has been updated.',
+              })
+            )
+          )
+        )
+      )
+      .pipe(gif(args.quiet, log(null, logFilesUpdate(name))))
+      .pipe(hooks.afterNotify())
   );
 
+  // Custom options when esModules are enabled
   if (esModules) {
-    webpack(webpackConfig);
-  }
+    const webpackGlob = Array.isArray(glob)
+      ? [...glob, '!**/_*.js']
+      : [glob, '!**/_*.js'];
+    const webpackConfig = mergeConfig(
+      {
+        entry: findEntries(webpackGlob, src),
+        output: {
+          path: dist,
+        },
+      },
+      webpackOptions
+    );
 
-  return [
-    nameFunction(name, () =>
+    webpack(webpackConfig);
+    build = nameFunction(name, () =>
       source(glob, { cwd: src, base: src })
         .pipe(hooks.beforeDiff())
         .pipe(diff(args.diffOnly))
@@ -113,37 +153,17 @@ export const createScriptsBuilder = options => {
         .pipe(hooks.afterCache())
         .pipe(hooks.beforeEsModules())
         .pipe(
-          gif(
-            es6 && esModules,
-            webpackStream(webpackConfig, webpack, (err, stats) => {
-              console.log(
-                stats.toString({
-                  ...webpackConfig.stats,
-                  colors: true,
-                })
-              );
-              console.log();
-            }).on('error', errorHandler)
-          )
+          webpackStream(webpackConfig, webpack, (err, stats) => {
+            console.log(
+              stats.toString({
+                ...webpackConfig.stats,
+                colors: true,
+              })
+            );
+            console.log();
+          }).on('error', errorHandler)
         )
         .pipe(hooks.afterEsModules())
-        .pipe(hooks.beforeSourceMapsInit())
-        .pipe(gif(!esModules, sourcemaps.init()))
-        .pipe(hooks.afterSourceMapsInit())
-        .pipe(hooks.beforeBabel())
-        .pipe(gif(es6 && !esModules, babel(babelOptions)))
-        .pipe(hooks.afterBabel())
-        .pipe(hooks.beforeUglify())
-        .pipe(
-          gif(
-            uglify && !esModules,
-            gulpUglify(uglifyOptions).on('error', errorHandler)
-          )
-        )
-        .pipe(hooks.afterUglify())
-        .pipe(hooks.beforeSourceMapsWrite())
-        .pipe(gif(!esModules, sourcemaps.write('maps')))
-        .pipe(hooks.afterSourceMapsWrite())
         .pipe(hooks.beforeDest())
         .pipe(dest(dist))
         .pipe(hooks.afterDest())
@@ -162,10 +182,12 @@ export const createScriptsBuilder = options => {
             )
           )
         )
-        .pipe(gif(args.quiet && !esModules, log(null, logFilesUpdate(name))))
         .pipe(hooks.afterNotify())
-    ),
+    );
+  }
 
+  return [
+    build,
     nameFunction(`${name}-cache`, () =>
       source(glob, { cwd: src, base: src })
         .pipe(hooks.beforeDiff())
